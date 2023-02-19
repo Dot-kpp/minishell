@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+
+# include "../libft/headers/libft.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

@@ -4,17 +4,25 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
+LIBFT = ./libft/libft.a
+
 SRCS = 	./src/main.c 
 
 OBJ = $(SRCS:%c=%o)
 
-all: $(NAME)
+all: $(LIBFT) $(NAME)
+
+$(LIBFT) :
+	@echo "Your libft is compiling"
+	@echo ""
+	@$(MAKE) -C libft
+	@echo ""
 
 $(NAME): $(OBJ)
 	@echo "Your shit is compiling"
 	@echo ""
 	@echo ""
-	@$(CC) $(CFLAGS) $(OBJ) -o minishell
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o minishell
 	@echo "Your shit is compiled"
 	@echo ""
 
@@ -24,7 +32,7 @@ clean:
 	@echo "(👍 ͡ ͜ʖ ͡)👍"
 
 fclean: clean
-	@rm -rf $(NAME) *.out *.exe ./src/*.o ./minishell
+	@rm -rf $(NAME) *.out *.exe ./src/*.o ./libft/*.a ./libft/src/*.o ./minishell
 	@echo ""
 	@echo "Your shit is clean af!"
 	@echo ""

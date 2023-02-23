@@ -4,7 +4,7 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-LIBFT = ./libft/libft.a
+LIBFT = ./lib/libft/libft.a
 
 SRCS = 	./src/main.c 
 

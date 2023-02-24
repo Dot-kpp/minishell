@@ -15,7 +15,7 @@ all: $(LIBFT) $(NAME)
 $(LIBFT) :
 	@echo "Your libft is compiling"
 	@echo ""
-	@$(MAKE) -C libft
+	@$(MAKE) -C lib/libft
 	@echo ""
 
 $(NAME): $(OBJ)
@@ -32,7 +32,7 @@ clean:
 	@echo "(👍 ͡ ͜ʖ ͡)👍"
 
 fclean: clean
-	@rm -rf $(NAME) *.out *.exe ./src/*.o ./libft/*.a ./libft/src/*.o ./minishell
+	@rm -rf $(NAME) *.out *.exe ./src/*.o ./lib/libft/*.a ./lib/libft/src/*.o ./minishell
 	@echo ""
 	@echo "Your shit is clean af!"
 	@echo ""

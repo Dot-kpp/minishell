@@ -1,5 +1,12 @@
 #include "../includes/minishell.h"
 
+//signal handler 
+
+static void signal_handler(int signal)
+{
+	(void)signal;
+	// Handle signal here
+}
 
 //init singleton for "global" use *replaces global variables
 t_data *get_data(void)
@@ -37,15 +44,17 @@ static void minishell(void)
 	t_data *data;
 
 	data = get_data();
+	signal(SIGINT, signal_handler);  
 	while (1)
 	{
-		printf("minishell> ");
-		exit(0);
+		data->line = readline("minishell> "); // Read user input using readline
+		if (data->line == NULL)
+			exit(0);
 		//print prompt
 		//init signal handling
 		//readline
 		//parse
-		//execute
+		//execute 
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 12:34:40 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/06 12:06:59 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/07 11:42:09 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 int	main(int argc, char const *argv[], char const *env[])
 {
 	char	*str;
+	pid_t	pid;
+	int		*ret;
 
 	if (!ft_strncmp(argv[1], "cd", 3))
 	{
@@ -53,6 +55,16 @@ int	main(int argc, char const *argv[], char const *env[])
 	{
 		/* -- FT_UNSET -- */
 		ft_unset(argv + 1);
+	}
+	else if (!ft_strncmp(argv[1], "exec", 6))
+	{
+		/* -- EXEC -- */
+		pid = fork();
+		if (!pid)
+			execve(argv[2], (char *const *)argv + 2, (char *const *)env);
+		else
+			waitpid(pid, ret, 0);
+		printf("ms still here\n");
 	}
 	else
 	{

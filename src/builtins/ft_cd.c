@@ -6,14 +6,14 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:59:56 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/06 12:07:15 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/07 15:29:44 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <errno.h>
 
-//Do not support natively $, ~, ' and " (must be handled before)
+//Does not support natively $, ~, ' and " (must be handled before)
 //argc == 3 not supported (not asked)
 //Output to be defined
 void	ft_cd(int argc, char const *argv[])

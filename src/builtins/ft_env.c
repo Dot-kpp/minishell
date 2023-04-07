@@ -6,13 +6,13 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 16:24:34 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/06 12:08:54 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/07 15:30:03 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-//o do
+//to do
 //need data struct
 		// printf("%s %s\n", env[i], getenv(env[i]));
 void	ft_env(char const *env[])

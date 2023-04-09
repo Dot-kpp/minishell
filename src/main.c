@@ -1,61 +1,60 @@
 #include "../includes/minishell.h"
 
-//signal handler 
-
-static void signal_handler(int signal)
-{
-	(void)signal;
-	// Handle signal here
-}
-
-//init singleton for "global" use *replaces global variables
-t_data *get_data(void)
-{
-	static t_data *data;
-
-	data = NULL;
-
-	if(data == NULL)
-		data = (t_data *)malloc(sizeof(t_data));
-	return (data);
-}
-
-//exit and free all data
-void exit_all(void)
-{
-	t_data *data;
-
-	data = get_data();
-	free(data);
-}
-
-void init_data(void)
-{
-	t_data *data;
-
-	data = get_data();
-	data->line = NULL;
-	data->args = NULL;
-}
 
 //start running minishell overlay
 static void minishell(void)
 {
 	t_data *data;
+	(void) data;
+    char *input;
+    char cwd[1024];
 
-	data = get_data();
-	signal(SIGINT, signal_handler);  
-	while (1)
-	{
-		data->line = readline("minishell> "); // Read user input using readline
-		if (data->line == NULL)
-			exit(0);
-		//print prompt
-		//init signal handling
-		//readline
-		//parse
-		//execute 
-	}
+    while (1) {
+        // Print the shell prompt
+        if (getcwd(cwd, sizeof(cwd)) == NULL) {
+            perror("getcwd() error");
+            return;
+        }
+        printf("%s$ ", cwd);
+
+        // Read user input
+        input = readline(NULL);
+
+        // If input is NULL, user has pressed Ctrl-D or EOF has been reached
+        if (input == NULL) {
+            printf("\n");
+            break;
+        }
+
+        // If input is empty, continue to next loop iteration
+        if (ft_strlen(input) == 0) {
+            free(input);
+            continue;
+        }
+
+        // Add input to history
+        add_history(input);
+
+        // Create child process to execute command
+        pid_t pid = fork();
+        if (pid == -1) {
+            perror("fork() error");
+            return;
+        } else if (pid == 0) {
+            // Child process
+            char *args[] = {"/bin/sh", "-c", input, NULL};
+            execv(args[0], args);
+            perror("execv() error");
+            exit(1);
+        } else {
+            // Parent process
+            int status;
+            waitpid(pid, &status, 0);
+        }
+
+        free(input);
+    }
+
 }
 
 int main(int ac, char **av, char **envp)
@@ -67,6 +66,7 @@ int main(int ac, char **av, char **envp)
 	init_data();
 	minishell();
 	exit_all();
+    clear_history();
 	
 	return (0);
 }

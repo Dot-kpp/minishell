@@ -2,11 +2,13 @@ NAME = minishell
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -I./includes
 
 LIBFT = ./lib/libft/libft.a
 
-SRCS = 	./src/main.c 
+READLINE = -L./lib/ -lreadline
+
+SRCS = 	./src/main.c ./src/init_data.c ./src/signals.c  ./src/errors.c 
 
 OBJ = $(SRCS:%c=%o)
 
@@ -22,7 +24,7 @@ $(NAME): $(OBJ)
 	@echo "Your shit is compiling"
 	@echo ""
 	@echo ""
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o minishell
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -L./lib -lreadline -o minishell
 	@echo "Your shit is compiled"
 	@echo ""
 

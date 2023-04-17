@@ -6,19 +6,44 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 12:34:40 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/07 11:42:09 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/17 14:16:42 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../../includes/ms_builtins.h"
 
+// const t_builtin	builtins[7] = {
+// 	{"cd", ft_cd},
+// 	{"echo", ft_echo}
+// 	// {"env", ft_env},
+// 	// {"exit", ft_exit},
+// 	// {"export", ft_export},
+// 	// {"pwd", ft_pwd},
+// 	// {"unset", ft_unset}
+// };
+
 //TESTER
 int	main(int argc, char const *argv[], char const *env[])
 {
+	t_list	*envl;
 	char	*str;
 	pid_t	pid;
 	int		*ret;
+
+	envl = NULL; // init error
+	init_env(env, &envl);
+
+	// for (size_t i = 0; i < 7; i++)
+	// {
+	// 	if (!ft_strncmp(argv[1], builtins[i].name,
+	// 		ft_strlen(builtins[i].name) + 1))
+	// 	{
+	// 		builtins[i].fun(argc - 1, argv + 1);
+	// 		// bi[i].fun;
+	// 		break;
+	// 	}
+	// }
 
 	if (!ft_strncmp(argv[1], "cd", 3))
 	{
@@ -34,17 +59,25 @@ int	main(int argc, char const *argv[], char const *env[])
 	else if (!ft_strncmp(argv[1], "env", 4))
 	{
 		/* -- FT_ENV -- */
-		ft_env(env);
+		// ft_env(get_envl(NULL));
+		ft_env(envl);
+	}
+	else if (!ft_strncmp(argv[1], "getenv", 7))
+	{
+		/* -- FT_ENV -- */
+		printf("%s=%s\n", argv[2], get_envp(envl, argv[2]));
 	}
 	else if (!ft_strncmp(argv[1], "exit", 5))
 	{
 		/* -- FT_EXIT -- */
+		free_env(envl);
 		ft_exit(NULL, NULL);
 	}
 	else if (!ft_strncmp(argv[1], "export", 7))
 	{
 		/* -- FT_EXPORT -- */
-		ft_export(argv + 1);
+		ft_export(argv[2], &envl);
+		ft_env(envl);
 	}
 	else if (!ft_strncmp(argv[1], "pwd", 4))
 	{
@@ -54,7 +87,8 @@ int	main(int argc, char const *argv[], char const *env[])
 	else if (!ft_strncmp(argv[1], "unset", 6))
 	{
 		/* -- FT_UNSET -- */
-		ft_unset(argv + 1);
+		ft_unset(argv[2], &envl);
+		ft_env(envl);
 	}
 	else if (!ft_strncmp(argv[1], "exec", 6))
 	{
@@ -72,4 +106,6 @@ int	main(int argc, char const *argv[], char const *env[])
 		printf("%s.\n", str);
 		free(str);
 	}
+	
+	free_env(envl);
 }

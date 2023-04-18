@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 11:39:49 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/17 13:19:07 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/18 12:32:28 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,14 @@ void	free_env(t_list *envl)
 }
 
 //init envl
+//gibblish
 void	init_env(char const *env[], t_list **envl)
 {
 	int			i;
 
 	i = -1;
 	while (env[++i])
-		ft_export(env[i], envl);
+		ft_export(2, env - 1 + i, envl);
 }
 
 //get env value by name

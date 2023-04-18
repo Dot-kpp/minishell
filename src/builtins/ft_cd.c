@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:59:56 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/11 14:43:19 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/18 11:56:06 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@
 //Does not support natively $, ~, ' and " (must be handled before)
 //argc == 3 not supported (not asked)
 //Output to be defined
-void	ft_cd(int argc, char const *argv[])
+void	ft_cd(int argc, char const *argv[], t_list **envl)
 {
 	int		err;
 	char	*path;
 	char	*home;
 
+	(void)envl;
 	home = getenv("HOME");
 	if (!home && argc == 1)
 		return ;

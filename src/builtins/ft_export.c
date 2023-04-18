@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 16:26:30 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/17 12:33:49 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/18 11:47:41 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,22 @@ static int	try_replace_envp(char **split, t_list *envl)
 
 //add new env_var by string sep by '='
 //debug split
-void	ft_export(char const *var, t_list **envl_ptr)
+//check export with no args
+void	ft_export(int argc, char const *argv[], t_list **envl)
 {
 	t_ms_env	*content;
 	char		**split;
 
-	if (!envl_ptr)
+	if (!envl || argc > 2)
 		return ;
-	split = ft_split(var, '='); // error if '=' in value, must split only once
+	split = ft_split(argv[1], '='); // error if '=' in value, must split only once
 	// if split_count = 1, return bad argument
-	if (try_replace_envp(split, *envl_ptr))
+	if (try_replace_envp(split, *envl))
 		return ;
 	content = malloc(sizeof(t_ms_env));
 	content->name = split[0];
 	content->value = split[1];
-	ft_lstadd_back(envl_ptr, ft_lstnew((void *)content));
+	ft_lstadd_back(envl, ft_lstnew((void *)content));
 	free(split);
 	return ;
 }

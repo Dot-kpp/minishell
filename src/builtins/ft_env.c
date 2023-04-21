@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 16:24:34 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/18 11:52:45 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/19 12:37:45 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../../includes/ms_builtins.h"
 
 //print envl
-void	ft_env(int argc, char const *argv[], t_list **envl_ptr)
+int	ft_env(int argc, char const *argv[], t_list **envl_ptr)
 {
 	t_list		*envl;
 	t_ms_env	*content;
@@ -28,4 +28,5 @@ void	ft_env(int argc, char const *argv[], t_list **envl_ptr)
 		printf("%s=%s\n", content->name, content->value);
 		envl = envl->next;
 	}
+	return (0);
 }

@@ -8,7 +8,19 @@ LIBFT = ./lib/libft/libft.a
 
 READLINE = -L./lib/ -lreadline
 
-SRCS = 	./src/main.c ./src/init_data.c ./src/signals.c  ./src/errors.c 
+SRCS = 	./src/main.c \
+		./src/init_data.c \
+		./src/signals.c  \
+		./src/errors.c \
+		./src/builtins/ft_cd.c \
+		./src/builtins/ft_echo.c \
+		./src/builtins/ft_env.c \
+		./src/builtins/ft_exit.c \
+		./src/builtins/ft_export.c \
+		./src/builtins/ft_pwd.c \
+		./src/builtins/ft_unset.c \
+		./src/builtins/call_builtin.c \
+		./src/env/env_var.c
 
 OBJ = $(SRCS:%c=%o)
 
@@ -24,7 +36,7 @@ $(NAME): $(OBJ)
 	@echo "Your shit is compiling"
 	@echo ""
 	@echo ""
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -L./lib -lreadline -o minishell
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -g -L./lib -lreadline -o minishell
 	@echo "Your shit is compiled"
 	@echo ""
 

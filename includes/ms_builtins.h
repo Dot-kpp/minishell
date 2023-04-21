@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:01:48 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/18 11:55:36 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/21 14:44:14 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ typedef struct	s_ms_env
 }	t_ms_env;
 
 
-int		call_builtin(int argc, char const *argv[], t_list *envl);
+int		call_builtin(int argc, char const *argv[], t_list **envl);
 
-void	ft_cd(int argc, char const *argv[], t_list **envl);
-void	ft_echo(int argc, char const *argv[], t_list **envl);
-void	ft_env(int argc, char const *argv[], t_list **envl);
-void	ft_exit(int argc, char const *argv[], t_list **envl);
-void	ft_export(int argc, char const *argv[], t_list **envl);
-void 	ft_pwd(int argc, char const *argv[], t_list **envl);
-void	ft_unset(int argc, char const *argv[], t_list **envl);
+int		ft_cd(int argc, char const *argv[], t_list **envl);
+int		ft_echo(int argc, char const *argv[], t_list **envl);
+int		ft_env(int argc, char const *argv[], t_list **envl);
+int		ft_exit(int argc, char const *argv[], t_list **envl);
+int		ft_export(int argc, char const *argv[], t_list **envl);
+int		ft_pwd(int argc, char const *argv[], t_list **envl);
+int		ft_unset(int argc, char const *argv[], t_list **envl);
 
 // t_list	*get_envl(t_list *new_envl);
 void	free_env_content(void *arg);

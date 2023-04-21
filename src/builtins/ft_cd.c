@@ -6,40 +6,34 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:59:56 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/18 11:56:06 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/20 11:21:46 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <errno.h>
-
-//pad de fork/execv pour call cd (tout les builtins ?)
+#include "../../includes/ms_builtins.h"
 
 //Does not support natively $, ~, ' and " (must be handled before)
 //argc == 3 not supported (not asked)
-//Output to be defined
-void	ft_cd(int argc, char const *argv[], t_list **envl)
+int	ft_cd(int argc, char const *argv[], t_list **envl)
 {
 	int		err;
-	char	*path;
 	char	*home;
 
 	(void)envl;
-	home = getenv("HOME");
-	if (!home && argc == 1)
-		return ;
-	path = (char *)argv[1];
+	home = get_envp(*envl, "HOME");
 	if (argc > 2)
-		perror("ft_cd: too many args");
-	if (argc == 1 && home)
-		err = chdir(home);
-	else if (!path[0] || !home)
-		return ;
-	else
-		err = chdir(path);
-	if (err)
+		return (printf("ft_cd: Too many args\n"), 1);
+	else if (argc == 1)
 	{
-		perror("ft_cd");
-		exit (1);
+		if (home)
+			err = chdir(home);
+		else
+			return (0);
 	}
+	else
+		err = chdir(argv[1]);
+	if (err)
+		return (perror("ft_cd"), 1);
+	return (0);
 }

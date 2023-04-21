@@ -6,14 +6,14 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 12:26:29 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/18 11:53:01 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/19 12:39:23 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 //Output to be defined
-void	ft_echo(int argc, char const *argv[], t_list **envl)
+int	ft_echo(int argc, char const *argv[], t_list **envl)
 {
 	int	i;
 	int	newline;
@@ -34,4 +34,5 @@ void	ft_echo(int argc, char const *argv[], t_list **envl)
 	}
 	if (newline)
 		printf("\n");
+	return (0);
 }

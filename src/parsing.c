@@ -23,7 +23,7 @@ int ft_strcmp(char *s1, char *s2)
     return(s1[i] - s2[i]);
 }
 
-
+//link libft functions not working, needs to be looked into
 void parse_args(char **av)
 {
     int i;
@@ -35,6 +35,7 @@ void parse_args(char **av)
     j = 0;
     k = 0;
     args = (char **)malloc(sizeof(char *) * 1024);
+
     while (av[i])
     {
         if (ft_strcmp(av[i], ";") == 0)
@@ -45,20 +46,21 @@ void parse_args(char **av)
         }
         else
         {
-            args[j][k] = *av[i];
+            args[j] = (char *)malloc(sizeof(char) * (strlen(av[i]) + 1));
+            strcpy(args[j], av[i]);
             k++;
         }
         i++;
     }
-    args[j][k] = '\0';
-    j++;
     args[j] = NULL;
     i = 0;
     while (args[i])
     {
         printf("%s\n", args[i]);
+        free(args[i]);
         i++;
     }
+    free(args);
 }
 
 

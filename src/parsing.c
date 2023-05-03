@@ -48,12 +48,13 @@ void parse_args(char **av)
         {
             args[j] = (char *)malloc(sizeof(char) * (strlen(av[i]) + 1));
             strcpy(args[j], av[i]);
-            k++;
+            j++;
         }
         i++;
     }
     args[j] = NULL;
     i = 0;
+
     while (args[i])
     {
         printf("%s\n", args[i]);
@@ -62,6 +63,8 @@ void parse_args(char **av)
     }
     free(args);
 }
+
+
 
 
 //tester

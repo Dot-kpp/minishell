@@ -25,7 +25,6 @@ static void minishell(void)
             printf("\n");
             break;
         }
-
         // If input is empty, continue to next loop iteration
         if (ft_strlen(input) == 0) {
             free(input);
@@ -43,7 +42,7 @@ static void minishell(void)
         } else if (pid == 0) {
             // Child process
             char *args[] = {"/bin/sh", "-c", input, NULL};
-            execv(args[0], args);
+            execve(args[0], args, NULL);
             perror("execv() error");
             exit(1);
         } else {

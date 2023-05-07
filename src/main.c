@@ -36,16 +36,19 @@ static void minishell(void)
 
         // Create child process to execute command
         pid_t pid = fork();
+                // Display history if "history" is entered
         if (pid == -1) {
             perror("fork() error");
             return;
-        } else if (pid == 0) {
+        }
+        else if (pid == 0) {
             // Child process
             char *args[] = {"/bin/sh", "-c", input, NULL};
             execve(args[0], args, NULL);
             perror("execv() error");
             exit(1);
-        } else {
+        }
+        else {
             // Parent process
             int status;
             waitpid(pid, &status, 0);

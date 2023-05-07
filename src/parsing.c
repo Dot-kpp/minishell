@@ -12,7 +12,6 @@
 
 #include "../includes/minishell.h"
 
-//ft_strcmp
 int ft_strcmp(char *s1, char *s2)
 {
     int i;
@@ -22,6 +21,32 @@ int ft_strcmp(char *s1, char *s2)
         i++;
     return(s1[i] - s2[i]);
 }
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
+}
+
+char	*ft_strcpy(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s2[i] != '\0')
+	{
+		s1[i] = s2[i];
+		i++;
+	}
+	s1[i] = '\0';
+	return (s1);
+}
+
+
 
 //link libft functions not working, needs to be looked into
 void parse_args(char **av)
@@ -46,15 +71,14 @@ void parse_args(char **av)
         }
         else
         {
-            args[j] = (char *)malloc(sizeof(char) * (strlen(av[i]) + 1));
-            strcpy(args[j], av[i]);
+            args[j] = (char *)malloc(sizeof(char) * (ft_strlen(av[i]) + 1));
+            ft_strcpy(args[j], av[i]);
             j++;
         }
         i++;
     }
     args[j] = NULL;
     i = 0;
-
     while (args[i])
     {
         printf("%s\n", args[i]);

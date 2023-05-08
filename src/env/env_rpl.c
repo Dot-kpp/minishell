@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strnrpl.c                                       :+:      :+:    :+:   */
+/*   env_rpl.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 12:06:01 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/06 12:03:32 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/04/25 11:37:20 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,14 @@ char	*ft_strnrpl(char const *str, char const *pst, char const *cpy, int n)
 		i++;
 	stitched = malloc(len);
 	if (!stitched)
-		return (NULL);
+		return (0);
 	ft_strlcpy(stitched, str, i + 1);
 	ft_strlcat(stitched, cpy, len);
 	ft_strlcat(stitched, str + i + strlen(pst), len);
 	return (stitched);
+}
+
+char	**env_rpl(char **argv, t_list **envl)
+{
+
 }

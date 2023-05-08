@@ -1,72 +1,120 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/20 13:08:47 by fgeslin           #+#    #+#             */
+/*   Updated: 2023/04/20 13:08:47 by fgeslin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../includes/minishell.h"
+#include "../includes/ms_builtins.h"
+#include <limits.h>
+
+static int  get_argsize(char **arg)
+{
+	int i;
+
+	i = 0;
+	while (arg[i])
+		i++;
+	return (i);
+}
 
 //start running minishell overlay
-static void minishell(void)
+static void minishell(t_list **envl)
 {
-	t_data *data;
-	(void) data;
-    char *input;
-    char cwd[1024];
+	t_data	*data;
+	(void)	data;
+	char	*input;
+	char	cwd[PATH_MAX];
+	char	**args;
+	int		ret = 0;
 
-    while (1) {
-        // Print the shell prompt
-        if (getcwd(cwd, sizeof(cwd)) == NULL) {
-            perror("getcwd() error");
-            return;
-        }
-        printf("%s$ ", cwd);
+	while (1) {
+		// Print the shell prompt
+		if (getcwd(cwd, PATH_MAX) == NULL) {
+			perror("getcwd() error");
+			return;
+		}
 
-        // Read user input
-        input = readline(NULL);
+		// Read user input
+		if (ret)
+			ft_strlcat(cwd, " \033[0;31m%\033[0m ", PATH_MAX);
+		else
+			ft_strlcat(cwd, " \033[0;34m%\033[0m ", PATH_MAX);
+		input = readline(cwd);
 
-        // If input is NULL, user has pressed Ctrl-D or EOF has been reached
-        if (input == NULL) {
-            printf("\n");
-            break;
-        }
+		// If input is NULL, user has pressed Ctrl-D or EOF has been reached
+		if (input == NULL) {
+			printf("\n");
+			break;
+		}
 
-        // If input is empty, continue to next loop iteration
-        if (ft_strlen(input) == 0) {
-            free(input);
-            continue;
-        }
+		// If input is empty, continue to next loop iteration
+		if (ft_strlen(input) == 0) {
+			free(input);
+			continue;
+		}
 
-        // Add input to history
-        add_history(input);
+		// Add input to history
+		add_history(input);
 
-        // Create child process to execute command
-        pid_t pid = fork();
-        if (pid == -1) {
-            perror("fork() error");
-            return;
-        } else if (pid == 0) {
-            // Child process
-            char *args[] = {"/bin/sh", "-c", input, NULL};
-            execv(args[0], args);
-            perror("execv() error");
-            exit(1);
-        } else {
-            // Parent process
-            int status;
-            waitpid(pid, &status, 0);
-        }
+		// CHECK IF ASSIGNATION
 
-        free(input);
-    }
+		// CHECK IF BUILTIN
+		args = ft_split(input, ' ');
+		ret = call_builtin(get_argsize(args), (const char **)args, envl);
+		if (ret != -1)
+		{
+			for (size_t i = 0; args[i]; i++)
+				free(args[i]);
+			free(args);
+			free(input);
+			continue;
+		}
+
+		// Create child process to execute command
+		pid_t pid = fork();
+		if (pid == -1) {
+			perror("fork() error");
+			return;
+		} else if (pid == 0) {
+			// Child process
+			// char *args[] = {"/bin/sh", "-c", input, NULL};
+			execv(args[0], args);
+			perror("execv() error");
+			exit(1);
+		} else {
+			// Parent process
+			int status;
+			waitpid(pid, &status, 0);
+		}
+
+		free(args);
+		free(input);
+	}
 
 }
 
-int main(int ac, char **av, char **envp)
+int main(int ac, char const **av, char const **envp)
 {
+	t_list	*envl;
 	(void)ac;
 	(void)av;
-	(void)envp;
 
-	init_data();
-	minishell();
+	envl = 0;
+	init_env(envp, &envl);
+
+	// init_data();
+	minishell(&envl);
 	exit_all();
-    clear_history();
+	clear_history();
+
+	free_env(envl);
 	
 	return (0);
 }

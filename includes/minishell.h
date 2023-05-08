@@ -22,6 +22,8 @@ typedef struct s_data
 {
 	char	*line;
 	char	**args;
+	char	*input;
+	char	cwd[PATH_MAX];
 }				t_data;
 
 

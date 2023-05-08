@@ -42,10 +42,7 @@ static void minishell(t_list **envl)
 		}
 
 		// Read user input
-		if (ret)
-			ft_strlcat(cwd, " \033[0;31m%\033[0m ", PATH_MAX);
-		else
-			ft_strlcat(cwd, " \033[0;34m%\033[0m ", PATH_MAX);
+		ft_strlcat(cwd, " % ", PATH_MAX);
 		input = readline(cwd);
 
 		// If input is NULL, user has pressed Ctrl-D or EOF has been reached
@@ -79,16 +76,21 @@ static void minishell(t_list **envl)
 
 		// Create child process to execute command
 		pid_t pid = fork();
-		if (pid == -1) {
+		if (pid == -1)
+		{
 			perror("fork() error");
 			return;
-		} else if (pid == 0) {
+		}
+		else if (pid == 0)
+		{
 			// Child process
 			// char *args[] = {"/bin/sh", "-c", input, NULL};
 			execv(args[0], args);
 			perror("execv() error");
 			exit(1);
-		} else {
+		}
+		else
+		{
 			// Parent process
 			int status;
 			waitpid(pid, &status, 0);

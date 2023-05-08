@@ -27,49 +27,41 @@ static int  get_argsize(char **arg)
 static void minishell(t_list **envl)
 {
 	t_data	*data;
-	(void)	data;
-	char	*input;
-	char	cwd[PATH_MAX];
-	char	**args;
 	int		ret = 0;
 
+	data = get_data();
+
 	while (1) {
-		// Print prompt
-		cwd_check(cwd);
-
-		// Read user input
-		ft_strlcat(cwd, " % ", PATH_MAX);
-		input = readline(cwd);
-
+		cwd_check(data->cwd);
+		ft_strlcat(data->cwd, " % ", PATH_MAX);
+		data->input = readline(data->cwd);
 		// If input is NULL, user has pressed Ctrl-D or EOF has been reached
-		if (input == NULL) {
+		if (data->input == NULL) {
 			printf("\n");
 			break;
 		}
-
 		// If input is empty, continue to next loop iteration
-		if (ft_strlen(input) == 0) {
-			free(input);
+		if (ft_strlen(data->input) == 0) {
+			free(data->input);
 			continue;
 		}
-
 		// Add input to history
-		add_history(input);
+		add_history(data->input);
 
 		// CHECK IF ASSIGNATION
 
 		// CHECK IF BUILTIN
-		args = ft_split(input, ' ');
-		ret = call_builtin(get_argsize(args), (const char **)args, envl);
+		data->args = ft_split(data->input, ' ');
+		ret = call_builtin(get_argsize(data->args), (const char **)data->args, envl);
 		if (ret != -1)
 		{
-			for (size_t i = 0; args[i]; i++)
-				free(args[i]);
-			free(args);
-			free(input);
+			for (size_t i = 0; data->args[i]; i++)
+				free(data->args[i]);
+			free(data->args);
+			free(data->input);
 			continue;
 		}
-		start_piping(envl, args);
+		start_piping(envl, data->args);
 
 		// Create child process to execute command
 		// pid_t pid = fork();
@@ -81,8 +73,8 @@ static void minishell(t_list **envl)
 		// else if (pid == 0)
 		// {
 		// 	// Child process
-		// 	// char *args[] = {"/bin/sh", "-c", input, NULL};
-		// 	execv(args[0], args);
+		// 	// char *data->args[] = {"/bin/sh", "-c", data->input, NULL};
+		// 	execv(data->args[0], data->args);
 		// 	perror("execv() error");
 		// 	exit(1);
 		// }
@@ -93,8 +85,8 @@ static void minishell(t_list **envl)
 		// 	waitpid(pid, &status, 0);
 		// }
 
-		free(args);
-		free(input);
+		free(data->args);
+		free(data->input);
 	}
 
 }

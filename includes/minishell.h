@@ -15,6 +15,9 @@
 #include <readline/history.h>
 
 
+#define MAX_PATH_LENGTH 1024
+#define MAX_ARGS 128
+
 typedef struct s_data
 {
 	char	*line;

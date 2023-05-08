@@ -49,7 +49,7 @@ char	*ft_strcpy(char *s1, char *s2)
 
 
 //link libft functions not working, needs to be looked into
-void parse_args(char **av)
+void parse_args(char *input)
 {
     int i;
     int j;
@@ -61,9 +61,9 @@ void parse_args(char **av)
     k = 0;
     args = (char **)malloc(sizeof(char *) * 1024);
 
-    while (av[i])
+    while (input[i])
     {
-        if (ft_strcmp(av[i], ";") == 0)
+        if (ft_strcmp(input[i], ";") == 0)
         {
             args[j][k] = '\0';
             j++;
@@ -71,30 +71,13 @@ void parse_args(char **av)
         }
         else
         {
-            args[j] = (char *)malloc(sizeof(char) * (ft_strlen(av[i]) + 1));
-            ft_strcpy(args[j], av[i]);
+            args[j] = (char *)malloc(sizeof(char) * (ft_strlen(input[i]) + 1));
+            ft_strcpy(args[j], input[i]);
             j++;
         }
         i++;
     }
     args[j] = NULL;
     i = 0;
-    while (args[i])
-    {
-        printf("%s\n", args[i]);
-        free(args[i]);
-        i++;
-    }
     free(args);
-}
-
-
-
-
-//tester
-int main(int ac, char **av)
-{
-    if (ac > 1)
-        parse_args(av);
-    return(0);
 }

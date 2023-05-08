@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <limits.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -29,3 +30,8 @@ void init_data(void);
 
 //errors and exit functions
 void exit_all(void);
+void cwd_check(char *cwd);
+
+//pipes
+void start_piping(t_list **envl, char **args);
+

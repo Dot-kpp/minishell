@@ -12,7 +12,6 @@
 
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
-#include <limits.h>
 
 static int  get_argsize(char **arg)
 {
@@ -35,11 +34,8 @@ static void minishell(t_list **envl)
 	int		ret = 0;
 
 	while (1) {
-		// Print the shell prompt
-		if (getcwd(cwd, PATH_MAX) == NULL) {
-			perror("getcwd() error");
-			return;
-		}
+		// Print prompt
+		cwd_check(cwd);
 
 		// Read user input
 		ft_strlcat(cwd, " % ", PATH_MAX);
@@ -73,28 +69,29 @@ static void minishell(t_list **envl)
 			free(input);
 			continue;
 		}
+		start_piping(envl, args);
 
 		// Create child process to execute command
-		pid_t pid = fork();
-		if (pid == -1)
-		{
-			perror("fork() error");
-			return;
-		}
-		else if (pid == 0)
-		{
-			// Child process
-			// char *args[] = {"/bin/sh", "-c", input, NULL};
-			execv(args[0], args);
-			perror("execv() error");
-			exit(1);
-		}
-		else
-		{
-			// Parent process
-			int status;
-			waitpid(pid, &status, 0);
-		}
+		// pid_t pid = fork();
+		// if (pid == -1)
+		// {
+		// 	perror("fork() error");
+		// 	return;
+		// }
+		// else if (pid == 0)
+		// {
+		// 	// Child process
+		// 	// char *args[] = {"/bin/sh", "-c", input, NULL};
+		// 	execv(args[0], args);
+		// 	perror("execv() error");
+		// 	exit(1);
+		// }
+		// else
+		// {
+		// 	// Parent process
+		// 	int status;
+		// 	waitpid(pid, &status, 0);
+		// }
 
 		free(args);
 		free(input);

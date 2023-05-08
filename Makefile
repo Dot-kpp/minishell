@@ -12,6 +12,7 @@ SRCS = 	./src/main.c \
 		./src/init_data.c \
 		./src/signals.c  \
 		./src/errors.c \
+		./src/pipes.c \
 		./src/builtins/ft_cd.c \
 		./src/builtins/ft_echo.c \
 		./src/builtins/ft_env.c \

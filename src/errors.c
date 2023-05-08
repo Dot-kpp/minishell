@@ -18,7 +18,10 @@ void exit_all(void)
 	t_data *data;
 
 	data = get_data();
+	free(data->input);
+	free(data->cwd);
 	free(data);
+	exit(0);
 }
 
 void cwd_check(char *cwd)

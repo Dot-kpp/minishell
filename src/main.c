@@ -30,7 +30,6 @@ static void minishell(t_list **envl)
 	int		ret = 0;
 
 	data = get_data();
-
 	while (1) {
 		cwd_check(data->cwd);
 		ft_strlcat(data->cwd, " % ", PATH_MAX);
@@ -99,8 +98,7 @@ int main(int ac, char const **av, char const **envp)
 
 	envl = 0;
 	init_env(envp, &envl);
-
-	// init_data();
+	init_data();
 	minishell(&envl);
 	exit_all();
 	clear_history();

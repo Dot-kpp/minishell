@@ -30,6 +30,4 @@ void init_data(void)
 	t_data *data;
 
 	data = get_data();
-	data->line = NULL;
-	data->args = NULL;
 }

@@ -38,5 +38,5 @@ void exit_all(void);
 void cwd_check(char *cwd);
 
 //pipes
-void start_piping(t_list **envl, char **args);
+void start_piping(t_list **envl, t_data *data);
 

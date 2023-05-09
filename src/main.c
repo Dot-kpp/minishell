@@ -60,34 +60,10 @@ static void minishell(t_list **envl)
 			free(data->input);
 			continue;
 		}
-		start_piping(envl, data->args);
-
-		// Create child process to execute command
-		// pid_t pid = fork();
-		// if (pid == -1)
-		// {
-		// 	perror("fork() error");
-		// 	return;
-		// }
-		// else if (pid == 0)
-		// {
-		// 	// Child process
-		// 	// char *data->args[] = {"/bin/sh", "-c", data->input, NULL};
-		// 	execv(data->args[0], data->args);
-		// 	perror("execv() error");
-		// 	exit(1);
-		// }
-		// else
-		// {
-		// 	// Parent process
-		// 	int status;
-		// 	waitpid(pid, &status, 0);
-		// }
-
+		start_piping(envl, data);
 		free(data->args);
 		free(data->input);
 	}
-
 }
 
 int main(int ac, char const **av, char const **envp)

@@ -19,7 +19,7 @@ void exit_all(void)
 
 	data = get_data();
 	free(data->input);
-	free(data->cwd);
+	// free(data->cwd);
 	free(data);
 	exit(0);
 }

@@ -98,7 +98,7 @@ int main(int ac, char const **av, char const **envp)
 
 	envl = 0;
 	init_env(envp, &envl);
-	init_data();
+	// init_data();
 	minishell(&envl);
 	exit_all();
 	clear_history();

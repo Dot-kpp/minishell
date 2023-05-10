@@ -26,9 +26,6 @@ typedef struct s_data
 	char	cwd[PATH_MAX];
 }				t_data;
 
-
-#endif
-
 //init_data
 t_data *get_data(void);
 void init_data(void);
@@ -36,7 +33,9 @@ void init_data(void);
 //errors and exit functions
 void exit_all(void);
 void cwd_check(char *cwd);
+void free_input(void);
 
 //pipes
 void start_piping(t_list **envl, t_data *data);
 
+#endif

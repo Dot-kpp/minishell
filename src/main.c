@@ -48,7 +48,7 @@ static void minishell(t_list **envl)
 		add_history(data->input);
 
 		// CHECK IF ASSIGNATION
-
+		
 		// CHECK IF BUILTIN
 		data->args = ft_split(data->input, ' ');
 		ret = call_builtin(get_argsize(data->args), (const char **)data->args, envl);
@@ -56,13 +56,11 @@ static void minishell(t_list **envl)
 		{
 			for (size_t i = 0; data->args[i]; i++)
 				free(data->args[i]);
-			free(data->args);
-			free(data->input);
+			free_input();
 			continue;
 		}
 		start_piping(envl, data);
-		free(data->args);
-		free(data->input);
+		free_input();
 	}
 }
 

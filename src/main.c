@@ -34,6 +34,7 @@ static void minishell(t_list **envl)
 		cwd_check(data->cwd);
 		ft_strlcat(data->cwd, " % ", PATH_MAX);
 		data->input = readline(data->cwd);
+		new_prompt_signal();
 		// If input is NULL, user has pressed Ctrl-D or EOF has been reached
 		if (data->input == NULL) {
 			printf("\n");

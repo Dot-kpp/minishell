@@ -6,7 +6,7 @@ CFLAGS = -Wall -Werror -Wextra -I./includes
 
 LIBFT = ./lib/libft/libft.a
 
-READLINE = -L./lib/ -lreadline
+READLINE = -L./lib/readline/ -lreadline
 
 SRCS = 	./src/main.c \
 		./src/init_data.c \
@@ -37,7 +37,7 @@ $(NAME): $(OBJ)
 	@echo "Your shit is compiling"
 	@echo ""
 	@echo ""
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -g -L./lib -lreadline -o minishell
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(READLINE) -o $(NAME)
 	@echo "Your shit is compiled"
 	@echo ""
 

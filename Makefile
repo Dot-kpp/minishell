@@ -23,7 +23,7 @@ SRCS = 	./src/main.c \
 		./src/builtins/call_builtin.c \
 		./src/env/env_var.c
 
-OBJ = $(SRCS:%c=%o)
+OBJ = $(SRCS:%.c=%.o)
 
 all: $(LIBFT) $(NAME)
 

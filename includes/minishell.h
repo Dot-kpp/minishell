@@ -12,6 +12,7 @@
 #include <signal.h>
 #include <limits.h>
 #include <readline/readline.h>
+#include "../lib/readline/readline.h"
 #include <readline/history.h>
 
 
@@ -37,5 +38,9 @@ void free_input(void);
 
 //pipes
 void start_piping(t_list **envl, t_data *data);
+
+//signals
+void signal_handler(int signo);
+void new_prompt_signal(void);
 
 #endif

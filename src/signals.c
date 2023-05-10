@@ -11,11 +11,28 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include "../lib/readline/readline.h"
 
 // //signal handler 
 
-// static void signal_handler(int signal)
-// {
-// 	(void)signal;
-// 	// Handle signals here
-// }
+void signal_handler(int signo)
+{
+	// Handle signals here
+    (void)signo;
+	rl_on_new_line();
+    // rl_replace_line("", 0);
+    rl_redisplay();
+}
+
+void new_prompt_signal(void)
+{
+    struct sigaction sa;
+    sa.sa_handler = signal_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    if (sigaction(SIGINT, &sa, NULL) == -1)
+    {
+        perror("sigaction() error");
+        return;
+    }
+}

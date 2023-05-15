@@ -32,7 +32,6 @@ void new_prompt_signal(void)
 {
     struct sigaction sa;
 
-    printf("new_prompt_signal!\n");
     sa.sa_handler = signal_handler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;

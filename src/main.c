@@ -32,9 +32,9 @@ static void minishell(t_list **envl)
 	data = get_data();
 	while (1) {
 		cwd_check(data->cwd);
-		ft_strlcat(data->cwd, " % ", PATH_MAX);
-		data->input = readline(data->cwd);
+		ft_strlcat(data->cwd, "\001\033[1;96m\002 % \033[0;39m\001", PATH_MAX);
 		new_prompt_signal();
+		data->input = readline(data->cwd);
 		// If input is NULL, user has pressed Ctrl-D or EOF has been reached
 		if (data->input == NULL) {
 			printf("\n");

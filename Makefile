@@ -2,7 +2,7 @@ NAME = minishell
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -I./includes
+CFLAGS = -Wall -Werror -Wextra -I./includes -I ~/.brew/opt/readline/include
 
 LIBFT = ./lib/libft/libft.a
 
@@ -25,11 +25,15 @@ SRCS = 	./src/main.c \
 
 OBJ = $(SRCS:%.c=%.o)
 
+.c.o:
+	@ echo "$(YELLOW)Compiling: $(WHITE)$<"
+	@ ${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+
 all: $(LIBFT) $(NAME)
 
 $(LIBFT) :
 	@echo "Your libft is compiling"
-	@echo ""
+	@echo "..."
 	@$(MAKE) -C lib/libft
 	@echo ""
 
@@ -37,17 +41,19 @@ $(NAME): $(OBJ)
 	@echo "Your shit is compiling"
 	@echo ""
 	@echo ""
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -g -L./lib -lreadline -o minishell
+	@$(CC) -L ~/.brew/opt/readline/lib $(CFLAGS) $(OBJ) $(LIBFT) -lreadline -o $@
 	@echo "Your shit is compiled"
 	@echo ""
 
 
 clean:
-	@rm -rf $(NAME) *.out *.exe ./src/*.o ./minishell
+	@rm -rf $(OBJ)
+	@make clean -C lib/libft
 	@echo "(👍 ͡ ͜ʖ ͡)👍"
 
 fclean: clean
-	@rm -rf $(NAME) *.out *.exe ./src/*.o ./lib/libft/*.a ./lib/libft/src/*.o ./minishell
+	@rm -rf $(NAME)
+	@make fclean -C lib/libft
 	@echo ""
 	@echo "Your shit is clean af!"
 	@echo ""

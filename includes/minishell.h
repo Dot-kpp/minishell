@@ -1,8 +1,11 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+#define READLINE_LIBRARY
 
 # include "../lib/libft/headers/libft.h"
+#include "../lib/readline/includes/readline.h"
+#include "../lib/readline/includes/history.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,9 +14,6 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <limits.h>
-#include <readline/readline.h>
-// #include "../lib/readline/readline.h"
-#include <readline/history.h>
 
 
 #define MAX_PATH_LENGTH 1024

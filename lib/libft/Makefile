@@ -19,6 +19,9 @@ BONUSOBJ = $(BONUSSRCS:%c=%o)
 
 OBJ = $(SRCS:%c=%o)
 
+.c.o:
+	@ ${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+
 all: $(NAME)
 
 $(NAME): $(OBJ)
@@ -26,19 +29,9 @@ $(NAME): $(OBJ)
 	@echo "Done!"
 
 clean:
-
-	@echo "___________________"
-	@echo ""
-	@echo "*Simple clean. . .*"
 	@rm -f $(OBJ)
-	@echo "___________________"
 
 fclean:
-	@echo "______________________________"
-	@echo ""
-	@echo "*So fresh and so clean . . .*"
 	@rm -f $(NAME) $(OBJ)
-	@echo "*clean...                   *"
-	@echo "______________________________"
 
 re:	fclean all

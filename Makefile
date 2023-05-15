@@ -2,11 +2,11 @@ NAME = minishell
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -I./includes -I ~/.brew/opt/readline/include
+CFLAGS = -Wall -Werror -Wextra -I./includes
 
 LIBFT = ./lib/libft/libft.a
-
-READLINE = -L./lib/ -lreadline
+LIBRL = ./lib/readline/libreadline.a
+LIBRLINE = readline-8.2
 
 SRCS = 	./src/main.c \
 		./src/init_data.c \
@@ -25,26 +25,45 @@ SRCS = 	./src/main.c \
 
 OBJ = $(SRCS:%.c=%.o)
 
+WHITE		:= \033[0m
+RED			:= \033[1;31m
+GREEN		:= \033[1;32m
+YELLOW		:= \033[1;33m
+CYAN 		:= \033[1;36m
+
 .c.o:
 	@ echo "$(YELLOW)Compiling: $(WHITE)$<"
 	@ ${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
-all: $(LIBFT) $(NAME)
+all: $(LIBRL) $(LIBFT) $(NAME)
+
+$(LIBRL) :
+	@echo "$(YELLOW)Readline is compiling$(WHITE)"
+	@echo "$(YELLOW)...$(WHITE)"
+	@curl -O ftp://ftp.cwru.edu/pub/bash/$(LIBRLINE).tar.gz
+	@tar -xf $(LIBRLINE).tar.gz
+	@rm -rf $(LIBRLINE).tar.gz
+	@cd $(LIBRLINE) && bash configure && make
+	@mv ./$(LIBRLINE)/libreadline.a ./lib/readline
+	@rm -rf $(LIBRLINE)
+	@echo "$(GREEN)Readline is compiled$(WHITE)"
+	@echo ""
 
 $(LIBFT) :
-	@echo "Your libft is compiling"
-	@echo "..."
+	@echo "$(YELLOW)Your libft is compiling$(WHITE)"
+	@echo "$(YELLOW)...$(WHITE)"
 	@$(MAKE) -C lib/libft
+	@echo "$(GREEN)libft is compiled$(WHITE)"
 	@echo ""
 
-$(NAME): $(OBJ)
-	@echo "Your shit is compiling"
-	@echo ""
-	@echo ""
-	@$(CC) -L ~/.brew/opt/readline/lib $(CFLAGS) $(OBJ) $(LIBFT) -lreadline -o $@
-	@echo "Your shit is compiled"
+$(NAME): COMPIL_MSG $(OBJ)
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LIBRL) -lncurses -o $@
+	@echo "$(GREEN)Your shit is compiled$(WHITE)"
 	@echo ""
 
+COMPIL_MSG:
+	@echo "$(YELLOW)Your shit is compiling$(WHITE)"
+	@echo "$(YELLOW)...$(WHITE)"
 
 clean:
 	@rm -rf $(OBJ)
@@ -52,7 +71,7 @@ clean:
 	@echo "(👍 ͡ ͜ʖ ͡)👍"
 
 fclean: clean
-	@rm -rf $(NAME)
+	@rm -rf $(NAME) $(LIBRL)
 	@make fclean -C lib/libft
 	@echo ""
 	@echo "Your shit is clean af!"

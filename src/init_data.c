@@ -25,9 +25,11 @@ t_data *get_data(void)
 	return (data);
 }
 
-// void init_data(void)
-// {
-// 	t_data *data;
+void init_data(void)
+{
+	t_data *data;
 
-// 	data = get_data();
-// }
+	data = get_data();
+
+	data->previous_exit_status = 0;
+}

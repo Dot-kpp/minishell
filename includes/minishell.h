@@ -25,6 +25,7 @@ typedef struct s_data
 	char	**args;
 	char	*input;
 	char	cwd[PATH_MAX];
+	int 	previous_exit_status;
 }				t_data;
 
 //init_data

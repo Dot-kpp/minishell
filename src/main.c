@@ -23,42 +23,6 @@ static int  get_argsize(char **arg)
 	return (i);
 }
 
-int execute_command(char *command) {
-    // Fork a child process to execute the command
-    pid_t pid = fork();
-    if (pid == -1) {
-        perror("fork() error");
-        return -1;
-    } else if (pid == 0) {
-        // Child process
-        execlp("/bin/sh", "sh", "-c", command, NULL);
-        perror("execlp() error");
-        exit(1);
-    } else {
-        // Parent process
-        int status;
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status)) {
-            return WEXITSTATUS(status);
-        } else {
-            // Handle abnormal termination
-            return -1;
-        }
-    }
-}
-
-void check_if_exit(void)
-{
-	t_data *data;
-
-	data = get_data();
-	int exit_status = execute_command(data->input);
-    if (exit_status != -1) {
-        data->previous_exit_status = exit_status;
-        printf("Exit status: %d\n", exit_status);
-    }
-}
-
 //start running minishell overlay
 static void minishell(t_list **envl)
 {
@@ -85,7 +49,6 @@ static void minishell(t_list **envl)
 		add_history(data->input);
 
 		// CHECK IF EXIT with $? = exit_status
-		check_if_exit();
 		// CHECK IF ASSIGNATION
 		
 		// CHECK IF BUILTIN

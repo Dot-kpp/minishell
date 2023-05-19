@@ -41,6 +41,7 @@ void	free_env(t_list *envl)
 
 //init envl
 //gibblish
+//init PWD SHLVL PATH _
 void	init_env(char const *env[], t_list **envl)
 {
 	int			i;

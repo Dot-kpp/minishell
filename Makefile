@@ -25,6 +25,9 @@ SRCS = 	./src/main.c \
 
 OBJ = $(SRCS:%.c=%.o)
 
+TEST_SRCS = ./unit_test/unit_tests.c
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
 WHITE		:= \033[0m
 RED			:= \033[1;31m
 GREEN		:= \033[1;32m
@@ -60,6 +63,10 @@ $(NAME): COMPIL_MSG $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LIBRL) -lncurses -o $@
 	@echo "$(GREEN)Your shit is compiled$(WHITE)"
 	@echo ""
+
+unit_test: $(TEST_OBJS) $(OBJ) $(LIBFT) $(LIBRL)
+	$(CC) $(CFLAGS) $(TEST_OBJS) $(OBJ) $(LIBFT) $(LIBRL) -l$(LIBRLINE) -o test
+	./test
 
 COMPIL_MSG:
 	@echo "$(YELLOW)Your shit is compiling$(WHITE)"

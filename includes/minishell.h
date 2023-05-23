@@ -28,6 +28,14 @@ typedef struct s_data
 	int 	previous_exit_status;
 }				t_data;
 
+
+//Unit tests, remove before pushing project for grading
+char **ms_parse_input(char *input);
+void ms_free_args(char **args);
+int ms_execute(char **args);
+int test_main();
+
+
 //init_data
 t_data *get_data(void);
 void init_data(void);

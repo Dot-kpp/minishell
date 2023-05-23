@@ -25,36 +25,6 @@ static int  get_argsize(char **arg)
 
 void start_piping(t_list **envl, t_data *data)
 {
-    // int		i;
-    // int		fd[2];
-    // int		fd_in;
-    // pid_t	pid;
-
-    // i = 0;
-    // fd_in = 0;
-    // while (args[i])
-    // {
-    //     pipe(fd);
-    //     pid = fork();
-    //     if (pid == 0)
-    //     {
-    //         dup2(fd_in, 0);
-    //         if (args[i + 1])
-    //             dup2(fd[1], 1);
-    //         close(fd[0]);
-    //         exit(0);
-    //     }
-    //     else
-    //     {
-    //         wait(NULL);
-    //         close(fd[1]);
-    //         fd_in = fd[0];
-    //         i++;
-    //     }
-    // }
-
-
-    		// Create child process to execute command
 		pid_t pid = fork();
 		if (pid == -1)
 		{

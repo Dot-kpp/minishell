@@ -52,4 +52,10 @@ void start_piping(t_list **envl, t_data *data);
 void signal_handler(int signo);
 void new_prompt_signal(void);
 
+//redirections
+int open_output_file(char *filename, int flags, mode_t mode);
+void handle_input_redirection(char **argv, int *argc, char **input_file);
+void handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file);
+void handle_heredoc_redirection(char **argv, int *argc, char **delimiter);
+
 #endif

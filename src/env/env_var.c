@@ -59,7 +59,9 @@ char	*get_envp(t_list *envl, char const *name)
 	while (envl)
 	{
 		content = envl->content;
-		if (!ft_strncmp(content->name, name, ft_strlen(content->name)))
+		// if (ft_strlen(name) != ft_strlen(content->name))
+		// 	return (NULL);
+		if (!ft_strncmp(content->name, name, ft_strlen(content->name) + 1))
 			return (content->value);
 		envl = envl->next;
 	}

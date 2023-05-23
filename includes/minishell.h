@@ -25,6 +25,8 @@
 # define MAX_PATH_LENGTH 1024
 # define MAX_ARGS 128
 
+# define WHTSPACES "\t\n\v\f\r \0"
+
 typedef struct s_cmd
 {
 	int		argc;
@@ -66,5 +68,8 @@ void start_piping(t_list **envl, t_data *data);
 //signals
 void signal_handler(int signo);
 void new_prompt_signal(void);
+
+//parsing
+char	*ft_append(char *s1, char const *s2, int n);
 
 #endif

@@ -15,23 +15,23 @@
 //exit and free all data
 void exit_all(void)
 {
-	t_data *data;
+	// t_data *data;
 
-	data = get_data();
-	free(data->input);
+	// data = get_data();
+	// free(data->input);
 	// free(data->cwd);
-	free(data);
+	// free(data);
 	exit(0);
 }
 
-void free_input(void)
-{
-	t_data *data;
+// void free_input(void)
+// {
+// 	t_data *data;
 
-	data = get_data();
-	free(data->args);
-	free(data->input);
-}
+// 	data = get_data();
+// 	free(data->args);
+// 	free(data->input);
+// }
 
 void cwd_check(char *cwd)
 {

@@ -44,32 +44,31 @@ typedef struct s_cmdtab
 	t_cmd	*cmdv;
 }	t_cmdtab;
 
-
-typedef struct s_data
-{
-	char	*line;
-	char	**args;
-	char	*input;
-	char	cwd[PATH_MAX];
-}				t_data;
-
 //init_data
-t_data *get_data(void);
-void init_data(void);
+// t_data		*get_data(void);
+// void		init_data(void);
 
 //errors and exit functions
-void exit_all(void);
-void cwd_check(char *cwd);
-void free_input(void);
+void		exit_all(void);
+void		cwd_check(char *cwd);
+// void		free_input(void);
 
 //pipes
-void start_piping(t_list **envl, t_data *data);
+// void		start_piping(t_list **envl, t_data *data);
 
 //signals
-void signal_handler(int signo);
-void new_prompt_signal(void);
+void		signal_handler(int signo);
+void		new_prompt_signal(void);
 
 //parsing
-char	*ft_append(char *s1, char const *s2, int n);
+t_cmdtab	*tokenize(char const *prompt, t_list **envl);
+//parsing utils
+char		*ft_append(char *s1, char const *s2, int n);
+int			nextquote(char const *s);
+int			smartcount(char const *s, char const *sep, int trim_sep);
+
+//freeing
+void		free_cmdtab(t_cmdtab *cmd_tab);
+char		**freetab(char **tab, int size);
 
 #endif

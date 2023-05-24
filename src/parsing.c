@@ -13,68 +13,6 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-//REMOVE DOUBLE QUOTE
-
-int	nextquote(char const *s)
-{
-	int	i;
-
-	i = 0;
-	if (*s == '\'' || *s == '\"')
-	{
-		while (s[++i])
-		{
-			if (s[i] == *s)
-				return (i);
-		}
-		return (perror("QUOTE_ERR"), -1);
-	}
-	return (0);
-}
-
-int	smartcount(char const *s, char const *sep, int trim_sep)
-{
-	int		count;
-	char	*str;
-
-	if (trim_sep)
-		count = 0;
-	else
-		count = 1;
-	str = (char *)s;
-	while (*str)
-	{
-		if (nextquote(str) >= 0)
-			str += nextquote(str);
-		else
-			return (-1);
-		if (trim_sep)
-		{
-			if (!ft_strchr(sep, *str) && ft_strchr(sep, *(str + 1)))
-				count++;
-		}
-		else if (ft_strchr(sep, *str))
-			count++;
-		str++;
-	}
-	return (count);
-}
-
-char	**freetab(char **tab, int size)
-{
-	int	i;
-
-	i = -1;
-	while (++i < size)
-	{
-		*(tab[i]) = 0;
-		free(tab[i]);
-	}
-	*tab = 0;
-	free(tab);
-	return (0);
-}
-
 char	**cmd_split(char const *s, char const sep, int const size)
 {
 	char	**tab;
@@ -100,10 +38,37 @@ char	**cmd_split(char const *s, char const sep, int const size)
 	return (tab);
 }
 
-char	*arg_expand(char const *str, int len, t_list **envl) //40
+char	*arg_stitch(char const *str, int *shift, int *i, t_list **envl)
 {
 	char	*arg;
 	char	*temp;
+
+	arg = ft_calloc(1, sizeof(char));
+	if (str[*shift + *i - 1] == '\'')
+	{
+		*i += nextquote(str + *shift - 1);
+		arg = ft_append(arg, str + *shift, *i - 1);
+		*shift += *i;
+		*i = 0;
+	}
+	if (str[*shift + *i - 1] == '$')
+	{
+		while (!ft_strchr("$\t\n\v\f\r \0", str[*shift + *i]))
+			(*i)++;
+		temp = ft_substr(str + *shift, 0, *i);
+		if (get_envp(*envl, temp))
+			arg = ft_append(arg, get_envp(*envl, temp),
+					strlen(get_envp(*envl, temp)));
+		free(temp);
+		*shift += *i;
+		*i = -1;
+	}
+	return (arg);
+}
+
+char	*arg_expand(char const *str, int len, t_list **envl)
+{
+	char	*arg;
 	int		shift;
 	int		i;
 
@@ -114,29 +79,12 @@ char	*arg_expand(char const *str, int len, t_list **envl) //40
 	i = -1;
 	while (++i < len - shift)
 	{
-		if (str[shift + i] == '\'')
-		{
-			shift++;
-			while (str[shift + i] != '\'')
-				i++;
-			arg = ft_append(arg, str + shift, i);
-			shift += i + 1;
-			i = 0;
-		}
-		if (str[shift + i] == '$')
+		if (ft_strchr("\'\"$", str[shift + i]))
 		{
 			arg = ft_append(arg, str + shift, i);
 			shift += i + 1;
 			i = 0;
-			while (!ft_strchr("$\t\n\v\f\r \0", str[shift + i]))
-				i++;
-			temp = ft_substr(str + shift, 0, i);
-			if (get_envp(*envl, temp))
-				arg = ft_append(arg, get_envp(*envl, temp),
-						strlen(get_envp(*envl, temp)));
-			free(temp);
-			shift += i;
-			i = -1;
+			arg = ft_append(arg, arg_stitch(str, &shift, &i, envl), INT_MAX);
 		}
 	}
 	if (i <= len - shift)
@@ -171,7 +119,7 @@ char	**arg_split(char const *s, char const *sep, int size, t_list **envl)
 	return (tab);
 }
 
-t_cmdtab	*tokenize(char *prompt, t_list **envl)
+t_cmdtab	*tokenize(char const *prompt, t_list **envl)
 {
 	t_cmdtab	*cmdtab;
 	char		**cmdlines;
@@ -194,50 +142,32 @@ t_cmdtab	*tokenize(char *prompt, t_list **envl)
 	return (cmdtab);
 }
 
-void	free_cmdtab(t_cmdtab *cmd_tab)
-{
-	int	cmd_i;
-	int	arg_i;
+// int main(int ac, char **av, const char **ev)
+// {
+// 	t_cmdtab	*cmd_tab;
+// 	t_list		**envl;
 
-	cmd_i = -1;
-	while (++cmd_i < cmd_tab->cmdc)
-	{
-		arg_i = -1;
-		while (++arg_i < cmd_tab->cmdv[cmd_i].argc)
-			free(cmd_tab->cmdv[cmd_i].argv[arg_i]);
-		free(cmd_tab->cmdv[cmd_i].argv);
-	}
-	free(cmd_tab->cmdv);
-	free(cmd_tab);
-}
-
-int main(int ac, char **av, const char **ev)
-{
-	t_cmdtab	*cmd_tab;
-	t_list	**envl;
-
-//ENVL TEST
-	envl = ft_calloc(1, sizeof(*envl));
-	init_env(ev, envl);
-//PROMPT TEST
-	if (ac > 1)
-		cmd_tab = tokenize(av[1], envl);
-	else
-	cmd_tab = tokenize("||  ls| . > \"  cat | echo $HOME AR $USER  	\"  humm | exit   42   54? |  echo a$HOMEaer$USER hellothere | echo '$USER'ef testsinglequote |", envl);
-//DEBUG PRINT
-	printf("cmdc: %d\n", cmd_tab->cmdc);
-	for (size_t i = 0; i < cmd_tab->cmdc; i++)
-	{
-		printf("[%zu]%d: ", i, cmd_tab->cmdv[i].argc);
-		for (size_t j = 0; cmd_tab->cmdv[i].argv[j]; j++)
-			printf("%s,", cmd_tab->cmdv[i].argv[j]);
-		printf("\b \n");
-	}
-// FREE
-	free_cmdtab(cmd_tab);
-	free_env(*envl);
-	free(envl);
-}
-
-//TESTING
-//gcc -g src/parsing.c src/env/env_var.c src/builtins/ft_export.c src/ft_append.c lib/libft/libft.a lib/readline/libreadline.a -lncursesa$HOMEaer$USERa$HOMEaer$USER
+// //ENVL TEST
+// 	envl = ft_calloc(1, sizeof(*envl));
+// 	init_env(ev, envl);
+// //PROMPT TEST
+// 	if (ac > 1)
+// 		cmd_tab = tokenize(av[1], envl);
+// 	else
+// 	cmd_tab = tokenize("||  ls| . > ah\"  cat | echo $HOME AR $USER  	\"humm | exit   42   54? |  echo a$HOMEaer$USER hellothere | echo bah'alors$USER'ef testsinglequote |", envl);
+// //DEBUG PRINT
+// 	printf("cmdc: %d\n", cmd_tab->cmdc);
+// 	for (size_t i = 0; i < cmd_tab->cmdc; i++)
+// 	{
+// 		printf("[%zu]%d: ", i, cmd_tab->cmdv[i].argc);
+// 		for (size_t j = 0; cmd_tab->cmdv[i].argv[j]; j++)
+// 			printf("%s,", cmd_tab->cmdv[i].argv[j]);
+// 		printf("\b \n");
+// 	}
+// // FREE
+// 	free_cmdtab(cmd_tab);
+// 	free_env(*envl);
+// 	free(envl);
+// //TESTING
+// //gcc -g src/parsing.c src/env/env_var.c src/builtins/ft_export.c src/ft_append.c lib/libft/libft.a lib/readline/libreadline.a -lncursesa$HOMEaer$USERa$HOMEaer$USER
+// }

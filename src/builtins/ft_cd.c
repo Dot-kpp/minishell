@@ -13,6 +13,8 @@
 #include "../../includes/minishell.h"
 #include "../../includes/ms_builtins.h"
 
+//CHANGE $OLDPWD && $PWD when successful
+
 //Does not support natively $, ~, ' and " (must be handled before)
 //argc == 3 not supported (not asked)
 int	ft_cd(int argc, char const *argv[], t_list **envl)

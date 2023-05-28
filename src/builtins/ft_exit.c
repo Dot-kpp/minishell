@@ -13,6 +13,9 @@
 #include "../../includes/minishell.h"
 #include "../../includes/ms_builtins.h"
 
+//if argv[1] exist and is a number, return it
+//if argc > 2, cancel and error "exit: too many arguments"
+
 //to be defined when architecture finished
 //Free and clean
 int	ft_exit(int argc, char const *argv[], t_list **envl)

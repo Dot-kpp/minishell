@@ -76,6 +76,8 @@ char		*ft_append(char *s1, char const *s2, int n);
 int			nextquote(char const *s);
 int			smartcount(char const *s, char const *sep, int trim_sep);
 
+int			exec_cmd(t_cmd cmd, t_list **envl);
+
 //freeing
 void		free_cmdtab(t_cmdtab *cmd_tab);
 char		**freetab(char **tab, int size);

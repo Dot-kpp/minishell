@@ -38,6 +38,8 @@ char	**cmd_split(char const *s, char const sep, int const size)
 	return (tab);
 }
 
+//include $?
+//what about <<><>> ? (1 overwrite)
 char	*arg_stitch(char const *str, int *shift, int *i, t_list **envl)
 {
 	char	*arg;

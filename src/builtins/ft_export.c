@@ -50,7 +50,7 @@ static int	try_replace_envp(char **split, t_list *envl)
 }
 
 //add new env_var by string sep by '='
-//check name alphanum
+//check if name alphanum
 int	ft_export(int argc, char const *argv[], t_list **envl)
 {
 	t_ms_env	*content;

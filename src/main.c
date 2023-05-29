@@ -46,16 +46,21 @@ static void minishell(t_list **envl)
 		cmd_tab = tokenize(prompt, envl);
 
 		// EXEC
-		// CHECK IF BUILTIN
-		ret = call_builtin(cmd_tab->cmdv[0].argc, (const char **)cmd_tab->cmdv[0].argv, envl);
-		if (ret != -1)
+		for (int i = 0; i < cmd_tab->cmdc; i++)
 		{
-			free_cmdtab(cmd_tab);
-			continue;
+			ret = exec_cmd(cmd_tab->cmdv[i], envl);
 		}
+		
+		// ret = exec_cmd(cmd_tab->cmdv[0], envl);
+		// if (ret != -1)
+		// {
+		// 	free_cmdtab(cmd_tab);
+		// 	continue;
+		// }
 		// start_piping(envl, data);
 		// free_input();
 		free_cmdtab(cmd_tab);
+		free(prompt);
 	}
 }
 

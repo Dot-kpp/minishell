@@ -18,6 +18,7 @@ SRCS = 	./src/main.c \
 		./src/ft_append.c \
 		./src/parsing.c \
 		./src/parsing_utils.c \
+		./src/exec.c \
 		./src/free.c \
 		./src/builtins/ft_cd.c \
 		./src/builtins/ft_echo.c \

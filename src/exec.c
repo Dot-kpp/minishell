@@ -6,25 +6,59 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 16:23:01 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/05/29 11:41:07 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/05/29 14:34:56 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// 1- Parse the user input to identify the command and its arguments.
-
-// 2- Check if the command is a built-in shell command. If it is, execute the built-in command directly.
-
-// 3- If the command is not a built-in command, search for the executable file in the directories listed in the PATH environment variable. The PATH variable is a colon-separated list of directories in which the shell will look for executable files.
-
-// 4- If the command is specified with a relative or absolute path, use that path to locate the executable file.
-
-// 5 - If the executable file is found, execute it with the specified arguments. If the file is not found, print an error message and return control to the shell.
 
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-int exec_cmd(t_cmd cmd)
+// called only if '/' in the cmd
+char	*expand_cmd(char *name, t_list *envl)
 {
-    (void)cmd;
-    return (0);
+	char	**paths;
+	char	*temp_path;
+	int		len;
+	int		i;
+
+	paths = ft_split((const char *)get_envp(envl, "PATH"), ':');
+	len = 0;
+	while (paths[len])
+		len++;
+	i = 0;
+	while (i < len)
+	{
+		temp_path = ft_strdup(paths[i]);
+		temp_path = ft_append(temp_path, "/", 2);
+		temp_path = ft_append(temp_path, name, ft_strlen(name) + 1);
+		if (access(temp_path, F_OK) == 0)
+			return (freetab(paths, len), temp_path);
+		free(temp_path);
+		i++;
+	}
+	return (freetab(paths, len), name);
+}
+
+int exec_cmd(t_cmd cmd, t_list **envl)
+{
+	int		ret;
+	pid_t	pid;
+
+	ret = call_builtin(cmd.argc, (const char **)cmd.argv, envl);
+	if (ret > -1)
+		return (ret);
+
+	pid = fork();
+	if (pid == 0)
+	{
+		ret = execve(expand_cmd(cmd.argv[0], *envl), cmd.argv, NULL); //envl to char *const*
+		if (ret > -1)
+			return (ret);
+		return (printf("command not found: %s\n", cmd.argv[0]), -1);
+	}
+	else
+	{
+		waitpid(pid, &ret, 0);
+		return(ret);
+	}
 }

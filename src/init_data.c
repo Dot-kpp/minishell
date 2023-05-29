@@ -12,24 +12,19 @@
 
 #include "../includes/minishell.h"
 
-
 //init singleton for "global" use *replaces global variables
-// t_data *get_data(void)
-// {
-// 	static t_data *data;
-
-// 	data = NULL;
-
-// 	if(data == NULL)
-// 		data = (t_data *)malloc(sizeof(t_data));
-// 	return (data);
-// }
-
-void init_data(void)
+t_cmdtab *get_cmdtab(void)
 {
-	t_data *data;
+	static t_cmdtab *cmdtab = NULL;
 
-	data = get_data();
+	if(cmdtab == NULL)
+		cmdtab = (t_cmdtab *)malloc(sizeof(t_cmdtab));
+	return (cmdtab);
+}
 
-	data->previous_exit_status = 0;
+void init_cmdtab(void)
+{
+	t_cmdtab *cmdtab;
+
+	cmdtab = get_cmdtab();
 }

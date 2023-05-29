@@ -29,29 +29,21 @@
 
 typedef struct s_cmd
 {
-<<<<<<< HEAD
-	char	*line;
-	char	**args;
-	char	*input;
-	char	cwd[PATH_MAX];
-	int 	previous_exit_status;
-}				t_data;
-=======
 	int		argc;
 	char	**argv;
 
-	char	*red_in;
-	char	*red_out;
-	char	*red_app;
-	char	*red_her;
+	char	*rin;
+	char	*rout;
+	char	*rapp;
+	char	*rher;
 }	t_cmd;
 
 typedef struct s_cmdtab
 {
 	int		cmdc;
 	t_cmd	*cmdv;
+	int		exit_status;
 }	t_cmdtab;
->>>>>>> fgeslin
 
 
 //Unit tests, remove before pushing project for grading
@@ -62,8 +54,8 @@ int test_main();
 
 
 //init_data
-// t_data		*get_data(void);
-// void		init_data(void);
+t_cmdtab	*get_cmdtab(void);
+void		init_cmdtab(void);
 
 //errors and exit functions
 void		exit_all(void);

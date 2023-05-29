@@ -23,38 +23,6 @@
 // 	return (i);
 // }
 
-<<<<<<< HEAD
-void start_piping(t_list **envl, t_data *data)
-{
-		pid_t pid = fork();
-		if (pid == -1)
-		{
-			perror("fork() error");
-			return;
-		}
-		else if (pid == 0)
-		{
-			// Child process
-            char *args[] = {"/bin/sh", "-c", data->input, NULL};
-            data->args = args;
-			if (execv(data->args[0], data->args) == -1) 
-            {
-                perror("execv() error");
-                exit(1);
-            }
-            call_builtin(get_argsize(args), (const char **)args, envl);
-		}
-        else
-        {
-        // Parent process
-            int status;
-            if (waitpid(pid, &status, 0) == -1) 
-            {
-                perror("waitpid() error");
-            }
-        }
-}
-=======
 // void start_piping(t_list **envl, t_data *data)
 // {
 //     // int		i;
@@ -115,4 +83,3 @@ void start_piping(t_list **envl, t_data *data)
 //             }
 //         }
 // }
->>>>>>> fgeslin

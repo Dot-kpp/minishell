@@ -5,6 +5,8 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra -I./includes
 
 LIBFT = ./lib/libft/libft.a
+LIBRL = ./lib/readline/libreadline.a
+LIBRLINE = readline-8.2
 
 READLINE = -L./lib/ -lreadline
 
@@ -63,12 +65,9 @@ $(LIBFT) :
 	@echo "$(GREEN)libft is compiled$(WHITE)"
 	@echo ""
 
-$(NAME): $(OBJ)
-	@echo "Your shit is compiling"
-	@echo ""
-	@echo ""
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -g -L./lib -lreadline -o minishell
-	@echo "Your shit is compiled"
+$(NAME): COMPIL_MSG $(OBJ)
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LIBRL) -lncurses -o $@
+	@echo "$(GREEN)Your shit is compiled$(WHITE)"
 	@echo ""
 
 unit_test: $(TEST_OBJS) $(OBJ) $(LIBFT) $(LIBRL)

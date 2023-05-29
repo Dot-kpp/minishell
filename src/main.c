@@ -40,14 +40,7 @@ static void minishell(t_list **envl)
 			continue;
 		}
 		// Add input to history
-<<<<<<< HEAD
-		add_history(data->input);
-
-		// CHECK IF EXIT with $? = exit_status
-		// CHECK IF ASSIGNATION
-=======
 		add_history(prompt);
->>>>>>> fgeslin
 		
 		//PARSING
 		cmd_tab = tokenize(prompt, envl);
@@ -74,7 +67,7 @@ int main(int ac, char const **av, char const **envp)
 
 	envl = 0;
 	init_env(envp, &envl);
-	init_data();
+	// init_data();
 	minishell(&envl);
 	exit_all();
 	clear_history();

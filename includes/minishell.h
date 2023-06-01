@@ -46,7 +46,7 @@ typedef struct s_cmdtab
 
 typedef struct s_mshell
 {
-	int		exit_status;
+	char	exit_status;
 	char	**env;
 }	t_mshell;
 

@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 16:23:01 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/06/01 16:41:48 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/06/01 17:08:43 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,25 +41,27 @@ char	*expand_cmd(char *name, char *path)
 
 int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 {
-	int		ret;
+	int		exit_status;
 	pid_t	pid;
 
-	ret = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-	if (ret > -1)
-		return (ret);
+	exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
+	if (exit_status > -1)
+		return (exit_status);
 	pid = fork();
 	if (pid == 0)
 	{
-		ret = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
+		exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
 						(const char **)mshell->env)), cmd.argv, mshell->env);
-		if (ret > -1)
-			exit (ret);
-		printf("command not found: %s\n", cmd.argv[0]);
+		// printf("fork %d\n", exit_status);
+		if (exit_status > -1)
+			exit (exit_status);
+		// printf("command not found: %s\n", cmd.argv[0]);
 		exit (-1);
 	}
 	else
 	{
-		waitpid(pid, &ret, 0);
-		return (ret);
+		waitpid(pid, &exit_status, 0);
+		// printf("mainwait %d\n", WEXITSTATUS(exit_status));
+		return (WEXITSTATUS(exit_status));
 	}
 }

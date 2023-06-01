@@ -53,15 +53,21 @@ char	*arg_stitch(char const *str, int *shift, int *i, t_mshell *mshell)
 	}
 	if (str[*shift + *i - 1] == '$')
 	{
-		//if next == ?
-		// append exit_status
-		while (!ft_strchr("$\t\n\v\f\r \0", str[*shift + *i]))
+		if (str[*shift + *i] == '?')
+		{
 			(*i)++;
-		temp = ft_substr(str + *shift, 0, *i);
-		if (ms_getenv(temp, (const char **)mshell->env))
-			arg = ft_append(arg, ms_getenv(temp, (const char **)mshell->env),
-					strlen(ms_getenv(temp, (const char **)mshell->env)));
-		free(temp);
+			arg = (ft_itoa(mshell->exit_status));
+		}
+		else
+		{
+			while (!ft_strchr("$\t\n\v\f\r \0", str[*shift + *i]))
+				(*i)++;
+			temp = ft_substr(str + *shift, 0, *i);
+			if (ms_getenv(temp, (const char **)mshell->env))
+				arg = ft_append(arg, ms_getenv(temp, (const char **)mshell->env),
+						strlen(ms_getenv(temp, (const char **)mshell->env)));
+			free(temp);
+		}
 		*shift += *i;
 		*i = -1;
 	}

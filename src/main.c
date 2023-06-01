@@ -44,6 +44,7 @@ static void	minishell(t_mshell *mshell)
 		i = -1;
 		while (++i < cmd_tab->cmdc) // EXEC
 			mshell->exit_status = exec_cmd(cmd_tab->cmdv[i], mshell);
+		// printf("%d\n", mshell->exit_status);
 		// if (mshell->exit_status != -1)
 		// {
 		// 	free_cmdtab(cmd_tab);

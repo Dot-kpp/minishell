@@ -6,22 +6,22 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 16:23:01 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/05/29 14:34:56 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/06/01 16:41:48 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-// called only if '/' in the cmd
-char	*expand_cmd(char *name, t_list *envl)
+// to be called only if '/' in the cmd
+char	*expand_cmd(char *name, char *path)
 {
 	char	**paths;
 	char	*temp_path;
 	int		len;
 	int		i;
 
-	paths = ft_split((const char *)get_envp(envl, "PATH"), ':');
+	paths = ft_split((const char *)path, ':');
 	len = 0;
 	while (paths[len])
 		len++;
@@ -39,26 +39,27 @@ char	*expand_cmd(char *name, t_list *envl)
 	return (freetab(paths, len), name);
 }
 
-int exec_cmd(t_cmd cmd, t_list **envl)
+int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 {
 	int		ret;
 	pid_t	pid;
 
-	ret = call_builtin(cmd.argc, (const char **)cmd.argv, envl);
+	ret = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
 	if (ret > -1)
 		return (ret);
-
 	pid = fork();
 	if (pid == 0)
 	{
-		ret = execve(expand_cmd(cmd.argv[0], *envl), cmd.argv, NULL); //envl to char *const*
+		ret = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
+						(const char **)mshell->env)), cmd.argv, mshell->env);
 		if (ret > -1)
-			return (ret);
-		return (printf("command not found: %s\n", cmd.argv[0]), -1);
+			exit (ret);
+		printf("command not found: %s\n", cmd.argv[0]);
+		exit (-1);
 	}
 	else
 	{
 		waitpid(pid, &ret, 0);
-		return(ret);
+		return (ret);
 	}
 }

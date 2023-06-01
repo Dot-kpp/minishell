@@ -24,15 +24,6 @@ void exit_all(void)
 	exit(0);
 }
 
-// void free_input(void)
-// {
-// 	t_data *data;
-
-// 	data = get_data();
-// 	free(data->args);
-// 	free(data->input);
-// }
-
 void cwd_check(char *cwd)
 {
 	if (getcwd(cwd, PATH_MAX) == NULL) {

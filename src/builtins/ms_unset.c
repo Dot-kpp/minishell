@@ -1,41 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/03 14:59:56 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/20 11:21:46 by fgeslin          ###   ########.fr       */
+/*   Created: 2023/04/03 16:26:00 by fgeslin           #+#    #+#             */
+/*   Updated: 2023/04/21 15:08:31 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../../includes/ms_builtins.h"
 
-//CHANGE $OLDPWD && $PWD when successful
-
-//Does not support natively $, ~, ' and " (must be handled before)
-//argc == 3 not supported (not asked)
-int	ft_cd(int argc, char const *argv[], t_list **envl)
+//del env_var by name
+int	ms_unset(int argc, char const *argv[], t_mshell *mshell)
 {
-	int		err;
-	char	*home;
+	char	*todel;
 
-	(void)envl;
-	home = get_envp(*envl, "HOME");
-	if (argc > 2)
-		return (printf("ft_cd: Too many args\n"), 1);
-	else if (argc == 1)
-	{
-		if (home)
-			err = chdir(home);
-		else
-			return (0);
-	}
-	else
-		err = chdir(argv[1]);
-	if (err)
-		return (perror("ft_cd"), 1);
+	if (argc != 2)
+		return (printf("ft_unset: Too many arguments\n"), 1);
+	if (!is_valid_envp(argv[1], ft_strlen(argv[1])))
+		return (printf("ft_unset: %s: invalid parameter name\n", argv[1]), 1);
+	todel = ft_strjoin(argv[1], "=");
+	mshell->env = shrink_matrix((const char **)mshell->env, todel);
+	free(todel);
 	return (0);
 }

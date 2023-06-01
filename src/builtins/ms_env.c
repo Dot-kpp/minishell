@@ -1,33 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/03 12:49:06 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/04/19 12:39:54 by fgeslin          ###   ########.fr       */
+/*   Created: 2023/04/03 16:24:34 by fgeslin           #+#    #+#             */
+/*   Updated: 2023/04/19 12:37:45 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <limits.h>
+#include "../../includes/ms_builtins.h"
 
-// Input / Output to be defined
-int	ft_pwd(int argc, char const *argv[], t_list **envl)
+//print envl
+int	ms_env(int argc, char const *argv[], t_mshell *mshell)
 {
-	char	cwd[PATH_MAX];
-
+	(void)argc;
 	(void)argv;
-	(void)envl;
-	if (argc > 1)
-		perror("pwd: too many arguments");
-	else if (getcwd(cwd, PATH_MAX) != NULL)
-	{
-		printf("%s\n", cwd);
-		return (0);
-	}
-	else
-		perror("pwd:");
-	return (1);
+	print_matrix((const char **)mshell->env);
+	return (0);
 }

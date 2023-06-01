@@ -38,9 +38,7 @@ char	**cmd_split(char const *s, char const sep, int const size)
 	return (tab);
 }
 
-//include $?
-//what about <<><>> ? (1 overwrite)
-char	*arg_stitch(char const *str, int *shift, int *i, t_list **envl)
+char	*arg_stitch(char const *str, int *shift, int *i, t_mshell *mshell)
 {
 	char	*arg;
 	char	*temp;
@@ -55,20 +53,24 @@ char	*arg_stitch(char const *str, int *shift, int *i, t_list **envl)
 	}
 	if (str[*shift + *i - 1] == '$')
 	{
+		//if next == ?
+		// append exit_status
 		while (!ft_strchr("$\t\n\v\f\r \0", str[*shift + *i]))
 			(*i)++;
 		temp = ft_substr(str + *shift, 0, *i);
-		if (get_envp(*envl, temp))
-			arg = ft_append(arg, get_envp(*envl, temp),
-					strlen(get_envp(*envl, temp)));
+		if (ms_getenv(temp, (const char **)mshell->env))
+			arg = ft_append(arg, ms_getenv(temp, (const char **)mshell->env),
+					strlen(ms_getenv(temp, (const char **)mshell->env)));
 		free(temp);
 		*shift += *i;
 		*i = -1;
 	}
+	//if str = <>><<>
+	// put in redir
 	return (arg);
 }
 
-char	*arg_expand(char const *str, int len, t_list **envl)
+char	*arg_expand(char const *str, int len, t_mshell *mshell)
 {
 	char	*arg;
 	int		shift;
@@ -86,7 +88,7 @@ char	*arg_expand(char const *str, int len, t_list **envl)
 			arg = ft_append(arg, str + shift, i);
 			shift += i + 1;
 			i = 0;
-			arg = ft_append(arg, arg_stitch(str, &shift, &i, envl), INT_MAX);
+			arg = ft_append(arg, arg_stitch(str, &shift, &i, mshell), INT_MAX); //draft
 		}
 	}
 	if (i <= len - shift)
@@ -94,7 +96,7 @@ char	*arg_expand(char const *str, int len, t_list **envl)
 	return (arg);
 }
 
-char	**arg_split(char const *s, char const *sep, int size, t_list **envl)
+char	**arg_split(char const *s, char const *sep, int size, t_mshell *mshell)
 {
 	char	**tab;
 	char	*str;
@@ -113,7 +115,7 @@ char	**arg_split(char const *s, char const *sep, int size, t_list **envl)
 			str++;
 		while (!ft_strchr(sep, str[len]) && str[len])
 			len += nextquote(str + len) + 1;
-		tab[count] = arg_expand(str, len, envl);
+		tab[count] = arg_expand(str, len, mshell);
 		if (!tab[count])
 			return (perror("arg_split: "), freetab(tab, count));
 		str += len + 1;
@@ -121,7 +123,7 @@ char	**arg_split(char const *s, char const *sep, int size, t_list **envl)
 	return (tab);
 }
 
-t_cmdtab	*tokenize(char const *prompt, t_list **envl)
+t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 {
 	t_cmdtab	*cmdtab;
 	char		**cmdlines;
@@ -136,7 +138,7 @@ t_cmdtab	*tokenize(char const *prompt, t_list **envl)
 	{
 		cmdtab->cmdv[i].argc = smartcount(cmdlines[i], WHTSPACES, 1);
 		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], WHTSPACES,
-				cmdtab->cmdv[i].argc, envl);
+				cmdtab->cmdv[i].argc, mshell);
 		free(cmdlines[i]);
 	// 	setredir(cmdtab->cmdv[i]);
 	}

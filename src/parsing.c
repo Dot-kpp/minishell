@@ -71,7 +71,7 @@ char	*arg_stitch(char const *str, int *shift, int *i, t_mshell *mshell)
 		*shift += *i;
 		*i = -1;
 	}
-	//if str = <>><<>
+	//if str = <>><<> 
 	// put in redir
 	return (arg);
 }

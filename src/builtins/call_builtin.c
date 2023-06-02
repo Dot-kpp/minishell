@@ -23,7 +23,7 @@ typedef struct s_builtin
 
 int	call_builtin(int argc, char const *argv[], t_mshell *mshell)
 {
-	char			*fun;
+	char			*lower_arg;
 	const t_builtin	builtins[] = {
 	{"cd", ms_cd},
 	{"echo", ms_echo},
@@ -38,13 +38,14 @@ int	call_builtin(int argc, char const *argv[], t_mshell *mshell)
 	i = -1;
 	while (++i < 7)
 	{
-		fun = (char *)argv[0];
+		lower_arg = ft_strdup(argv[0]);
 		len = -1;
 		while (argv[0][++len])
-			fun[len] = ft_tolower(argv[0][len]);
+			lower_arg[len] = ft_tolower(argv[0][len]);
 		len = ft_strlen(builtins[i].name) + 1;
-		if (!ft_strncmp(fun, builtins[i].name, len))
-			return (builtins[i].fun(argc, argv, mshell));
+		if (!ft_strncmp(lower_arg, builtins[i].name, len))
+			return (free(lower_arg), builtins[i].fun(argc, argv, mshell));
+		free(lower_arg);
 	}
 	return (-1);
 }

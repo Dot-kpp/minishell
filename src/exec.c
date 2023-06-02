@@ -6,14 +6,13 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 16:23:01 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/06/01 17:08:43 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/06/02 13:51:00 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-// to be called only if '/' in the cmd
 char	*expand_cmd(char *name, char *path)
 {
 	char	**paths;
@@ -21,6 +20,8 @@ char	*expand_cmd(char *name, char *path)
 	int		len;
 	int		i;
 
+	if (ft_strchr(name, '/'))
+		return (name);
 	paths = ft_split((const char *)path, ':');
 	len = 0;
 	while (paths[len])
@@ -36,7 +37,7 @@ char	*expand_cmd(char *name, char *path)
 		free(temp_path);
 		i++;
 	}
-	return (freetab(paths, len), name);
+	return (freetab(paths, len), NULL);
 }
 
 int	exec_cmd(t_cmd cmd, t_mshell *mshell)
@@ -52,16 +53,12 @@ int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 	{
 		exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
 						(const char **)mshell->env)), cmd.argv, mshell->env);
-		// printf("fork %d\n", exit_status);
-		if (exit_status > -1)
-			exit (exit_status);
-		// printf("command not found: %s\n", cmd.argv[0]);
+		printf("mshell: command not found: %s\n", cmd.argv[0]);
 		exit (-1);
 	}
 	else
 	{
 		waitpid(pid, &exit_status, 0);
-		// printf("mainwait %d\n", WEXITSTATUS(exit_status));
 		return (WEXITSTATUS(exit_status));
 	}
 }

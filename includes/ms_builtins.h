@@ -15,29 +15,14 @@
 
 # include "minishell.h"
 
-typedef struct	s_ms_env
-{
-	char	*name;
-	char	*value;
-}	t_ms_env;
+int		call_builtin(int argc, char const *argv[], t_mshell *mshell);
 
-
-int		call_builtin(int argc, char const *argv[], t_list **envl);
-
-int		ft_cd(int argc, char const *argv[], t_list **envl);
-int		ft_echo(int argc, char const *argv[], t_list **envl);
-int		ft_env(int argc, char const *argv[], t_list **envl);
-int		ft_exit(int argc, char const *argv[], t_list **envl);
-int		ft_export(int argc, char const *argv[], t_list **envl);
-int		ft_pwd(int argc, char const *argv[], t_list **envl);
-int		ft_unset(int argc, char const *argv[], t_list **envl);
-
-// t_list	*get_envl(t_list *new_envl);
-void	free_env_content(void *arg);
-void	free_env(t_list *envl);
-void	init_env(char const *env[], t_list **envl);
-char	*get_envp(t_list *envl, char const *name);
-
-char	*ft_strnrpl(char const *str, char const *pst, char const *cpy, int n);
+int		ms_cd(int argc, char const *argv[], t_mshell *mshell);
+int		ms_echo(int argc, char const *argv[], t_mshell *mshell);
+int		ms_env(int argc, char const *argv[], t_mshell *mshell);
+int		ms_exit(int argc, char const *argv[], t_mshell *mshell);
+int		ms_export(int argc, char const *argv[], t_mshell *mshell);
+int		ms_pwd(int argc, char const *argv[], t_mshell *mshell);
+int		ms_unset(int argc, char const *argv[], t_mshell *mshell);
 
 #endif

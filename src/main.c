@@ -14,65 +14,59 @@
 #include "../includes/ms_builtins.h"
 
 //start running minishell overlay
-static void minishell(t_list **envl)
+static void	minishell(t_mshell *mshell)
 {
-	// t_data		*data;
 	t_cmdtab	*cmd_tab;
-	int			ret = 0;
 	char		*prompt;
 	char		waiting_prompt[PATH_MAX];
 
-	// data = get_data();
-	while (1) {
-		cwd_check(get_envp(*envl, "PWD"));
-		ft_strlcpy(waiting_prompt, get_envp(*envl, "PWD"), PATH_MAX);
-		ft_strlcat(waiting_prompt, "\001\033[1;96m\002 % \033[0;39m\001", PATH_MAX);
+	while (1)
+	{
+		int	i;
+
+		// cwd_check(ft_getenv("PWD", (const char **)mshell->env));
+		getcwd(waiting_prompt, PATH_MAX);
+		if (!mshell->exit_status)
+			ft_strlcat(waiting_prompt, "\001\033[1;96m\002 % \033[0;39m\001", PATH_MAX);
+		else
+			ft_strlcat(waiting_prompt, "\001\033[1;91m\002 % \033[0;39m\001", PATH_MAX);
 		new_prompt_signal();
 		prompt = readline((const char *)waiting_prompt);
-		// If input is NULL, user has pressed Ctrl-D or EOF has been reached
-		if (prompt == NULL) {
-			printf("\n");
-			break;
-		}
-		// If input is empty, continue to next loop iteration
-		if (ft_strlen(prompt) == 0) {
-			free(prompt);
-			continue;
-		}
-		// Add input to history
-		add_history(prompt);
-		
-		//PARSING
-		cmd_tab = tokenize(prompt, envl);
-
-		// EXEC
-		// CHECK IF BUILTIN
-		ret = call_builtin(cmd_tab->cmdv[0].argc, (const char **)cmd_tab->cmdv[0].argv, envl);
-		if (ret != -1)
+		if (prompt == NULL) // If input is NULL, user has pressed Ctrl-D or EOF has been reached
+			return ;
+		if (ft_strlen(prompt) == 0)// If input is empty, continue to next loop iteration
 		{
-			free_cmdtab(cmd_tab);
-			continue;
+			free(prompt);
+			continue ;
 		}
+		add_history(prompt); // Add input to history
+		cmd_tab = tokenize(prompt, mshell); //PARSING
+		i = -1;
+		while (++i < cmd_tab->cmdc) // EXEC
+			mshell->exit_status = exec_cmd(cmd_tab->cmdv[i], mshell);
+		// printf("%d\n", mshell->exit_status);
+		// if (mshell->exit_status != -1)
+		// {
+		// 	free_cmdtab(cmd_tab);
+		// 	continue;
+		// }
 		// start_piping(envl, data);
 		// free_input();
 		free_cmdtab(cmd_tab);
+		free(prompt);
 	}
 }
 
-int main(int ac, char const **av, char const **envp)
+int	main(int ac, char const **av, char const **envp)
 {
-	t_list		*envl;
+	t_mshell	mshell;
+
 	(void)ac;
 	(void)av;
-
-	envl = 0;
-	init_env(envp, &envl);
-	// init_data();
-	minishell(&envl);
-	exit_all();
+	init_env(envp, &mshell);
+	minishell(&mshell);
+	// exit_all();
 	clear_history();
-
-	free_env(envl);
-	
+	free_matrix(mshell.env);
 	return (0);
 }

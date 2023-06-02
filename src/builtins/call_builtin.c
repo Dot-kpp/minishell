@@ -13,7 +13,7 @@
 #include "../../includes/minishell.h"
 #include "../../includes/ms_builtins.h"
 
-typedef int	(*t_BuiltinFun) (int argc, char const *argv[], t_list **envl);
+typedef int	(*t_BuiltinFun) (int argc, char const *argv[], t_mshell *mshell);
 
 typedef struct s_builtin
 {
@@ -21,25 +21,30 @@ typedef struct s_builtin
 	t_BuiltinFun	fun;
 }	t_builtin;
 
-int	call_builtin(int argc, char const *argv[], t_list **envl)
+int	call_builtin(int argc, char const *argv[], t_mshell *mshell)
 {
+	char			*fun;
 	const t_builtin	builtins[] = {
-	{"cd", ft_cd},
-	{"echo", ft_echo},
-	{"env", ft_env},
-	{"exit", ft_exit},
-	{"export", ft_export},
-	{"pwd", ft_pwd},
-	{"unset", ft_unset}};
+	{"cd", ms_cd},
+	{"echo", ms_echo},
+	{"env", ms_env},
+	{"exit", ms_exit},
+	{"export", ms_export},
+	{"pwd", ms_pwd},
+	{"unset", ms_unset}};
 	int				i;
 	int				len;
 
 	i = -1;
 	while (++i < 7)
 	{
+		fun = (char *)argv[0];
+		len = -1;
+		while (argv[0][++len])
+			fun[len] = ft_tolower(argv[0][len]);
 		len = ft_strlen(builtins[i].name) + 1;
-		if (!ft_strncmp(argv[0], builtins[i].name, len))
-			return (builtins[i].fun(argc, argv, envl));
+		if (!ft_strncmp(fun, builtins[i].name, len))
+			return (builtins[i].fun(argc, argv, mshell));
 	}
 	return (-1);
 }

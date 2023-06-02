@@ -13,12 +13,12 @@
 #include "../../includes/minishell.h"
 
 //Output to be defined
-int	ft_echo(int argc, char const *argv[], t_list **envl)
+int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 {
 	int	i;
 	int	newline;
 
-	(void)envl;
+	(void)mshell;
 	i = 0;
 	newline = 1;
 	while (++i < argc)

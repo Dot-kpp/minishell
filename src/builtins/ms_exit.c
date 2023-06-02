@@ -13,16 +13,18 @@
 #include "../../includes/minishell.h"
 #include "../../includes/ms_builtins.h"
 
-//if argv[1] exist and is a number, return it
-//if argc > 2, cancel and error "exit: too many arguments"
-
-//to be defined when architecture finished
 //Free and clean
-int	ft_exit(int argc, char const *argv[], t_list **envl)
+int	ms_exit(int argc, char const *argv[], t_mshell *mshell)
 {
-	(void)argc;
-	(void)argv;
-	free_env(*envl);
-	printf("Clean Exit\n");
-	exit(0);
+	int	ret;
+
+	ret = 0;
+	if (argc > 2)
+		return (printf("exit: too many arguments\n"), 1);
+	else if (argc == 2)
+		ret = ft_atoi(argv[1]);
+	(void)*mshell;
+	// free_env(*envl);
+	// printf("Clean Exit\n");
+	exit(ret);
 }

@@ -11,23 +11,24 @@ LIBRLINE = readline-8.2
 READLINE = -L./lib/ -lreadline
 
 SRCS = 	./src/main.c \
-		./src/init_data.c \
 		./src/signals.c  \
 		./src/errors.c \
 		./src/pipes.c \
 		./src/ft_append.c \
 		./src/parsing.c \
 		./src/parsing_utils.c \
+		./src/exec.c \
 		./src/free.c \
-		./src/builtins/ft_cd.c \
-		./src/builtins/ft_echo.c \
-		./src/builtins/ft_env.c \
-		./src/builtins/ft_exit.c \
-		./src/builtins/ft_export.c \
-		./src/builtins/ft_pwd.c \
-		./src/builtins/ft_unset.c \
-		./src/builtins/call_builtin.c \
-		./src/env/env_var.c
+		./src/matrix.c \
+		./src/env_utils.c \
+		./src/builtins/ms_cd.c \
+		./src/builtins/ms_echo.c \
+		./src/builtins/ms_env.c \
+		./src/builtins/ms_exit.c \
+		./src/builtins/ms_export.c \
+		./src/builtins/ms_pwd.c \
+		./src/builtins/ms_unset.c \
+		./src/builtins/call_builtin.c
 
 OBJ = $(SRCS:%.c=%.o)
 

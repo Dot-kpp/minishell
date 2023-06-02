@@ -47,6 +47,9 @@ int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 	exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
 	if (exit_status > -1)
 		return (exit_status);
+	exit_status = redirections(cmd.argc, (const char **)cmd.argv);
+	if (exit_status > -1)
+		return (exit_status);
 	pid = fork();
 	if (pid == 0)
 	{

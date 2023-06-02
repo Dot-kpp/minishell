@@ -20,6 +20,7 @@ SRCS = 	./src/main.c \
 		./src/exec.c \
 		./src/free.c \
 		./src/matrix.c \
+		./src/redirections.c \
 		./src/env_utils.c \
 		./src/builtins/ms_cd.c \
 		./src/builtins/ms_echo.c \

@@ -40,40 +40,47 @@ char	**cmd_split(char const *s, char const sep, int const size)
 
 char	*arg_stitch(char const *str, int *shift, int *i, t_mshell *mshell)
 {
-	char	*arg;
-	char	*temp;
+    char	*arg;
+    char	*temp;
 
-	arg = ft_calloc(1, sizeof(char));
-	if (str[*shift + *i - 1] == '\'')
-	{
-		*i += nextquote(str + *shift - 1);
-		arg = ft_append(arg, str + *shift, *i - 1);
-		*shift += *i;
-		*i = 0;
-	}
-	if (str[*shift + *i - 1] == '$')
-	{
-		if (str[*shift + *i] == '?')
-		{
-			(*i)++;
-			arg = (ft_itoa(mshell->exit_status));
-		}
-		else
-		{
-			while (!ft_strchr("$\t\n\v\f\r \0", str[*shift + *i]))
-				(*i)++;
-			temp = ft_substr(str + *shift, 0, *i);
-			if (ms_getenv(temp, (const char **)mshell->env))
-				arg = ft_append(arg, ms_getenv(temp, (const char **)mshell->env),
-						strlen(ms_getenv(temp, (const char **)mshell->env)));
-			free(temp);
-		}
-		*shift += *i;
-		*i = -1;
-	}
-	//if str = <>><<> 
-	// put in redir
-	return (arg);
+    arg = ft_calloc(1, sizeof(char));
+    if (str[*shift + *i - 1] == '\'')
+    {
+        *i += nextquote(str + *shift - 1);
+        arg = ft_append(arg, str + *shift, *i - 1);
+        *shift += *i;
+        *i = 0;
+    }
+    if (str[*shift + *i - 1] == '$')
+    {
+        if (str[*shift + *i] == '?')
+        {
+            (*i)++;
+            arg = (ft_itoa(mshell->exit_status));
+        }
+        else
+        {
+            while (!ft_strchr("$\t\n\v\f\r <>\0", str[*shift + *i]))
+                (*i)++;
+            temp = ft_substr(str + *shift, 0, *i);
+            if (ms_getenv(temp, (const char **)mshell->env))
+                arg = ft_append(arg, ms_getenv(temp, (const char **)mshell->env),
+                        strlen(ms_getenv(temp, (const char **)mshell->env)));
+            free(temp);
+        }
+        *shift += *i;
+        *i = -1;
+    }
+    if (str[*shift + *i - 1] == '<' || str[*shift + *i - 1] == '>' ||
+        (str[*shift + *i - 1] == '<' && str[*shift + *i] == '<') ||
+        (str[*shift + *i - 1] == '>' && str[*shift + *i] == '>'))
+    {
+        (*i)++;
+        arg = ft_substr(str + *shift - 1, 0, *i);
+        *shift += *i;
+        *i = -1;
+    }
+    return (arg);
 }
 
 char	*arg_expand(char const *str, int len, t_mshell *mshell)

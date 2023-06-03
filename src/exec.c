@@ -45,6 +45,7 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
     int exit_status;
     pid_t pid;
 
+	call_redirections(cmd.argc, (char **)cmd.argv);
     exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
     if (exit_status > -1) {
         return exit_status;
@@ -58,7 +59,6 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
 
 
     if (pid == 0) {
-		call_redirections(cmd.argc, (char **)cmd.argv);
         exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
         if (exit_status > -1) {
             exit(exit_status);

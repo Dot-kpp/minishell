@@ -1,0 +1,2 @@
+hello (null) test.txt
+[?2004h/Users/jpilotte/Desktop/minishell[1;96m % [0;39m^C[?2004l[?2004h[?2004l[?2004h/Users/jpilotte/Desktop/minishell[1;96m % [0;39m^C[?2004l[?2004h[?2004l[?2004h/Users/jpilotte/Desktop/minishell[1;96m % [0;39m^V[?2004l

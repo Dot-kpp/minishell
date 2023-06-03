@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
+#include "../includes/ms_builtins.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -88,8 +90,9 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
     }
 }
 
-int call_redirections(int argc, char **argv)
+int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
 {
+    int exit_status;
     int input_fd = STDIN_FILENO;
     int output_fd = STDOUT_FILENO;
     char *input_file = NULL;
@@ -132,7 +135,11 @@ int call_redirections(int argc, char **argv)
         return 1;
     }
 
-    system(argv[1]);
+    exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
+    if (exit_status > -1) {
+        return exit_status;
+    }
+    exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
 
     if (input_file != NULL) {
         close(input_fd);

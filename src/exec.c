@@ -47,6 +47,7 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
     pid_t pid;
 
 
+	call_redirections(cmd.argc, (char **)cmd.argv, cmd , mshell);
     exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
     if (exit_status > -1) {
         return exit_status;
@@ -57,17 +58,10 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
         exit(EXIT_FAILURE);
     }
     if (pid == 0) {
-	    call_redirections(cmd.argc, (char **)cmd.argv);
         exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
         if (exit_status > -1) {
             exit(exit_status);
         }
-        // if (cmd.infile || cmd.outfile || cmd.appendfile) {
-        //     exit_status = call_redirections((const char **)cmd.argv, cmd.argc);
-        //     if (exit_status > -1) {
-        //         exit(exit_status);
-        //     }
-        // }
         printf("fail\n");
         exit(EXIT_FAILURE);
     } else {

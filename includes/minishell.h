@@ -91,9 +91,11 @@ int			smartcount(char const *s, char const *sep, int trim_sep);
 void		free_cmdtab(t_cmdtab *cmd_tab);
 char		**freetab(char **tab, int size);
 
+char	*expand_cmd(char *name, char *path);
+
 //redirections
-int 		call_redirections(int argc, char **argv);
-int			open_output_file(const char *filename, int flags, mode_t mode);
+int 		call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell);
+// int			open_output_file(const char *filename, int flags, mode_t mode);
 // void 		handle_input_redirection(const char **cmdv, int *cmdc, const char **input_file);
 // void 		handle_output_redirection(const char **cmdv, int *cmdc, const char **output_file, const char **append_file)
 // void 		handle_heredoc_redirection(const char **cmdv, int *cmdc, const char **delimiter);

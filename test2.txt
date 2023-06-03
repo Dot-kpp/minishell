@@ -1,9 +1,0 @@
-Makefile
-README.md
-includes
-lib
-minishell
-src
-test2.txt
-mainwait 0
-[?2004h/mnt/c/Users/Kpp/Desktop/temp_stuff/minishell[1;96m % [0;39m[?2004l

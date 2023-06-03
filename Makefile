@@ -68,7 +68,7 @@ $(LIBFT) :
 	@echo ""
 
 $(NAME): COMPIL_MSG $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LIBRL) -lncurses -o $@
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LIBRL) -lncurses -g -o $@
 	@echo "$(GREEN)Your shit is compiled$(WHITE)"
 	@echo ""
 

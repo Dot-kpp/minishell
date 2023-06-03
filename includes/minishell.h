@@ -99,10 +99,10 @@ void		free_cmdtab(t_cmdtab *cmd_tab);
 char		**freetab(char **tab, int size);
 
 //redirections
-int			redirections(int cmdc, const char **cmdv);
-int			open_output_file(char *filename, int flags, mode_t mode);
-void		handle_input_redirection(char **argv, int *argc, char **input_file);
-void		handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file);
-void		handle_heredoc_redirection(char **argv, int *argc, char **delimiter);
+int 		call_redirections(int argc, char **argv);
+int			open_output_file(const char *filename, int flags, mode_t mode);
+// void 		handle_input_redirection(const char **cmdv, int *cmdc, const char **input_file);
+// void 		handle_output_redirection(const char **cmdv, int *cmdc, const char **output_file, const char **append_file)
+// void 		handle_heredoc_redirection(const char **cmdv, int *cmdc, const char **delimiter);
 
 #endif

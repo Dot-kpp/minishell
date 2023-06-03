@@ -39,32 +39,40 @@ char	*expand_cmd(char *name, char *path)
 	return (freetab(paths, len), name);
 }
 
-int	exec_cmd(t_cmd cmd, t_mshell *mshell)
-{
-	int		exit_status;
-	pid_t	pid;
 
-	exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-	if (exit_status > -1)
-		return (exit_status);
-	exit_status = redirections(cmd.argc, (const char **)cmd.argv);
-	if (exit_status > -1)
-		return (exit_status);
-	pid = fork();
-	if (pid == 0)
-	{
-		exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
-						(const char **)mshell->env)), cmd.argv, mshell->env);
-		// printf("fork %d\n", exit_status);
-		if (exit_status > -1)
-			exit (exit_status);
-		// printf("command not found: %s\n", cmd.argv[0]);
-		exit (-1);
-	}
-	else
-	{
-		waitpid(pid, &exit_status, 0);
-		// printf("mainwait %d\n", WEXITSTATUS(exit_status));
-		return (WEXITSTATUS(exit_status));
-	}
+int exec_cmd(t_cmd cmd, t_mshell *mshell)
+{
+    int exit_status;
+    pid_t pid;
+
+    exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
+    if (exit_status > -1) {
+        return exit_status;
+    }
+
+    pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+
+    if (pid == 0) {
+		call_redirections(cmd.argc, (char **)cmd.argv);
+        exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
+        if (exit_status > -1) {
+            exit(exit_status);
+        }
+        // if (cmd.infile || cmd.outfile || cmd.appendfile) {
+        //     exit_status = call_redirections((const char **)cmd.argv, cmd.argc);
+        //     if (exit_status > -1) {
+        //         exit(exit_status);
+        //     }
+        // }
+        printf("fail\n");
+        exit(EXIT_FAILURE);
+    } else {
+        waitpid(pid, &exit_status, 0);
+        return WEXITSTATUS(exit_status);
+    }
 }

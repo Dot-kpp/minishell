@@ -36,6 +36,7 @@ typedef struct s_cmd
 	char	*rout;
 	char	*rapp;
 	char	*rher;
+	char	**redirs;
 }	t_cmd;
 
 typedef struct s_cmdtab
@@ -70,14 +71,6 @@ char	*ms_getenv(char const *var, char const **env);
 void	init_env(char const *env[], t_mshell *mshell);
 int		update_envp(const char *str, t_mshell *mshell);
 int		is_valid_envp(const char *str, int n);
-
-//init_data
-t_cmdtab	*get_cmdtab(void);
-void		init_cmdtab(void);
-
-//errors and exit functions
-void		exit_all(void);
-void		cwd_check(char *cwd);
 
 //pipes
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);

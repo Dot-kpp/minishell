@@ -12,7 +12,6 @@ READLINE = -L./lib/ -lreadline
 
 SRCS = 	./src/main.c \
 		./src/signals.c  \
-		./src/errors.c \
 		./src/pipes.c \
 		./src/ft_append.c \
 		./src/parsing.c \

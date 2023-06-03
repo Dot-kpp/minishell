@@ -12,6 +12,18 @@
 
 #include "../../includes/minishell.h"
 
+static int	checkflag(const char *str)
+{
+	int	i;
+
+	i = 1;
+	while (str[i] == 'n')
+		i++;
+	if (i == (int)ft_strlen(str))
+		return (1);
+	return (0);
+}
+
 //Output to be defined
 int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 {
@@ -23,10 +35,13 @@ int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 	newline = 1;
 	while (++i < argc)
 	{
-		if (i == 1 && !strcmp(argv[1], "-n"))
+		if (i == 1 && !ft_strncmp(argv[1], "-n", 2))
 		{
-			newline = 0;
-			continue ;
+			if (checkflag(argv[1]))
+			{
+				newline = 0;
+				continue ;
+			}
 		}
 		printf("%s", argv[i]);
 		if (i + 1 < argc)

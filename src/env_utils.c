@@ -23,8 +23,23 @@ static void	ms_setenv(char *name, char *value, t_mshell *mshell)
 	update_envp(var, mshell);
 }
 
+char	*ms_getenv(char const *var, char const **env)
+{
+	char	*eq;
+	int		i;
+
+	i = 0;
+	eq = ft_strjoin(var, "=");
+	while (env[i])
+	{
+		if (!ft_strncmp(eq, env[i], ft_strlen(eq)))
+			return (free(eq), (char *)(env[i] + ft_strlen(eq)));
+		i++;
+	}
+	return (free(eq), NULL);
+}
+
 //init envl
-//init PWD SHLVL PATH _
 void	init_env(char const *env[], t_mshell *mshell)
 {
 	char	*temp;
@@ -42,24 +57,11 @@ void	init_env(char const *env[], t_mshell *mshell)
 	if (!temp || ft_atoi(temp) < 1)
 		ms_setenv("SHLVL", "1", mshell);
 	else
-		ms_setenv("SHLVL", ft_itoa(ft_atoi(temp) + 1), mshell);
-}
-
-//array
-char	*ms_getenv(char const *var, char const **env)
-{
-	char	*eq;
-	int		i;
-
-	i = 0;
-	eq = ft_strjoin(var, "=");
-	while (env[i])
 	{
-		if (!ft_strncmp(eq, env[i], ft_strlen(eq)))
-			return ((char *)(env[i] + ft_strlen(eq)));
-		i++;
+		temp = ft_itoa(ft_atoi(temp) + 1);
+		ms_setenv("SHLVL", temp, mshell);
+		free(temp);
 	}
-	return (NULL);
 }
 
 int	update_envp(const char *str, t_mshell *mshell)

@@ -46,11 +46,10 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
     int exit_status;
     pid_t pid;
 
-
-	call_redirections(cmd.argc, (char **)cmd.argv, cmd , mshell);
-    exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-    if (exit_status > -1) {
-        return exit_status;
+    if (strcmp(cmd.argv[0], "cd") == 0 || strcmp(cmd.argv[0], "echo") == 0 || strcmp(cmd.argv[0], "exit") == 0 || strcmp(cmd.argv[0], "export") == 0 || strcmp(cmd.argv[0], "unset") == 0) {
+    	exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
+    	if (exit_status > -1)
+       	 return exit_status;
     }
     pid = fork();
     if (pid == -1) {
@@ -58,6 +57,7 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
         exit(EXIT_FAILURE);
     }
     if (pid == 0) {
+		call_redirections(cmd.argc, (char **)cmd.argv, cmd, mshell);
         exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
         if (exit_status > -1) {
             exit(exit_status);

@@ -92,7 +92,9 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
 
 int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
 {
-    int exit_status;
+    // int exit_status;
+    (void)cmd;
+    (void)mshell;
     int input_fd = STDIN_FILENO;
     int output_fd = STDOUT_FILENO;
     char *input_file = NULL;
@@ -108,7 +110,7 @@ int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
         input_fd = open(input_file, O_RDONLY);
         if (input_fd == -1) {
             perror("open");
-            return 1;
+            return -1;
         }
     }
 
@@ -116,30 +118,30 @@ int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
         output_fd = open_output_file(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if (output_fd == -1) {
             perror("open");
-            return 1;
+            return -1;
         }
     } else if (append_file != NULL) {
         output_fd = open_output_file(append_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
         if (output_fd == -1) {
             perror("open");
-            return 1;
+            return -1;
         }
     }
 
     if (dup2(input_fd, STDIN_FILENO) == -1) {
         perror("dup2");
-        return 1;
+        return -1;
     }
     if (dup2(output_fd, STDOUT_FILENO) == -1) {
         perror("dup2");
-        return 1;
+        return -1;
     }
 
-    exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-    if (exit_status > -1) {
-        return exit_status;
-    }
-    exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
+    // exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
+    // if (exit_status > -1) {
+    //     return exit_status;
+    // }
+    // exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
 
     if (input_file != NULL) {
         close(input_fd);
@@ -147,7 +149,7 @@ int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
     if (output_file != NULL || append_file != NULL) {
         close(output_fd);
     }
-    return 0;
+    return -1;
 }
 
 // int main(int argc, char *argv[]) {

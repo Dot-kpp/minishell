@@ -46,6 +46,11 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
     int exit_status;
     pid_t pid;
 
+	// if (cmd.pipeline && cmd.pipeline->num_cmds > 1) {
+    // 	exit_status = exec_pipeline(*cmd.pipeline, mshell);
+    //     return exit_status;
+    // }
+
     if (strcmp(cmd.argv[0], "cd") == 0 || strcmp(cmd.argv[0], "echo") == 0 || strcmp(cmd.argv[0], "exit") == 0 || strcmp(cmd.argv[0], "export") == 0 || strcmp(cmd.argv[0], "unset") == 0) {
     	exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
     	if (exit_status > -1)

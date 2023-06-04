@@ -27,16 +27,23 @@
 
 # define WHTSPACES "\t\n\v\f\r \0"
 
+typedef struct s_cmd t_cmd;
+
+typedef struct s_pipeline {
+    int num_cmds;
+    t_cmd *cmds;
+} t_pipeline;
+
 typedef struct s_cmd
 {
 	int		argc;
 	char	**argv;
-
 	char	*rin;
 	char	*rout;
 	char	*rapp;
 	char	*rher;
 	char	**redirs;
+	t_pipeline *pipeline; 
 }	t_cmd;
 
 typedef struct s_cmdtab
@@ -44,6 +51,7 @@ typedef struct s_cmdtab
 	int		cmdc;
 	t_cmd	*cmdv;
 }	t_cmdtab;
+
 
 typedef struct s_mshell
 {
@@ -73,7 +81,10 @@ int		update_envp(const char *str, t_mshell *mshell);
 int		is_valid_envp(const char *str, int n);
 
 //pipes
+int 		exec_pipeline(t_pipeline pipeline, t_mshell *mshell);
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);
+
+
 // void		start_piping(t_list **envl, t_data *data);
 
 //signals

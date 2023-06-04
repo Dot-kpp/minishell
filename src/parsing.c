@@ -80,6 +80,13 @@ char	*arg_stitch(char const *str, int *shift, int *i, t_mshell *mshell)
         *shift += *i;
         *i = -1;
     }
+	if(str[*shift + *i - 1] == '|')
+	{
+		(*i)++;
+		arg = ft_substr(str + *shift - 1, 0, *i);
+		*shift += *i;
+		*i = -1;
+	}
     return (arg);
 }
 

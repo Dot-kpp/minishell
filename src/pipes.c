@@ -13,6 +13,61 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
+int exec_pipeline(t_pipeline pipeline, t_mshell *mshell) {
+    int num_cmds = pipeline.num_cmds;
+    int exit_status = 0;
+    int pipefd[2];
+    pid_t pid;
+
+    for (int i = 0; i < num_cmds; i++) {
+        if (i < num_cmds - 1) {
+            if (pipe(pipefd) == -1) {
+                perror("pipe");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        pid = fork();
+        if (pid == -1) {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        }
+
+        if (pid == 0) {
+            if (i > 0) {
+                if (dup2(pipefd[0], STDIN_FILENO) == -1) {
+                    perror("dup2");
+                    exit(EXIT_FAILURE);
+                }
+                close(pipefd[0]);
+                close(pipefd[1]);
+            }
+
+            if (i < num_cmds - 1) {
+                if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
+                    perror("dup2");
+                    exit(EXIT_FAILURE);
+                }
+                close(pipefd[0]);
+                close(pipefd[1]);
+            }
+
+            exit_status = exec_cmd(pipeline.cmds[i], mshell);
+            exit(exit_status);
+        } else {
+            if (i > 0) {
+                close(pipefd[0]);
+                close(pipefd[1]);
+            }
+            waitpid(pid, &exit_status, 0);
+        }
+    }
+
+    return (-1);
+}
+
+
+
 // static int  get_argsize(char **arg)
 // {
 // 	int i;

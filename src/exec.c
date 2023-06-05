@@ -46,15 +46,16 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
     int exit_status;
     pid_t pid;
 
-	// if (cmd.pipeline && cmd.pipeline->num_cmds > 1) {
-    // 	exit_status = exec_pipeline(*cmd.pipeline, mshell);
-    //     return exit_status;
-    // }
+	if (ft_strncmp(cmd.argv[0], "|", 2) == 0) {
+    	exit_status = exec_pipeline(&cmd.argc, (char **)cmd.argv , mshell);
+        if (exit_status > -1)
+            return exit_status;
+    }
 
-    if (strcmp(cmd.argv[0], "cd") == 0 || strcmp(cmd.argv[0], "echo") == 0 || strcmp(cmd.argv[0], "exit") == 0 || strcmp(cmd.argv[0], "export") == 0 || strcmp(cmd.argv[0], "unset") == 0) {
-    	exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-    	if (exit_status > -1)
-       	 return exit_status;
+	if (ft_strncmp(cmd.argv[0], "cd", 3) == 0 || ft_strncmp(cmd.argv[0], "echo", 5) == 0 || ft_strncmp(cmd.argv[0], "exit", 5) == 0 || ft_strncmp(cmd.argv[0], "export", 7) == 0 || ft_strncmp(cmd.argv[0], "unset", 6) == 0) {
+        exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
+        if (exit_status > -1)
+            return exit_status;
     }
     pid = fork();
     if (pid == -1) {

@@ -13,8 +13,17 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-int exec_pipeline(t_pipeline pipeline, t_mshell *mshell) {
-    int num_cmds = pipeline.num_cmds;
+int count_args(char **args) {
+    int count = 0;
+    while (*args != NULL) {
+        count++;
+        args++;
+    }
+    return count;
+}
+
+int exec_pipeline(int *argc, char **argv, t_mshell *mshell) {
+    int num_cmds = *argc;
     int exit_status = 0;
     int pipefd[2];
     pid_t pid;
@@ -52,8 +61,11 @@ int exec_pipeline(t_pipeline pipeline, t_mshell *mshell) {
                 close(pipefd[1]);
             }
 
-            exit_status = exec_cmd(pipeline.cmds[i], mshell);
-            exit(exit_status);
+            char **cmd_argv = argv + i;
+            int cmd_argc = count_args(*&cmd_argv);
+            t_cmd cmd = { .argc = cmd_argc, .argv = cmd_argv };
+            exit_status = exec_cmd(cmd, mshell);
+            exit(-1);
         } else {
             if (i > 0) {
                 close(pipefd[0]);
@@ -66,7 +78,23 @@ int exec_pipeline(t_pipeline pipeline, t_mshell *mshell) {
     return (-1);
 }
 
+// int main(void)
+// {
+//     t_mshell    mshell;
+//     t_cmd       *cmd;
+//     t_pipeline  pipeline;
 
+//     mshell.env = NULL; // Set up your environment variables here
+
+//     cmd = parse_pipe_cmd("ls | grep minishell", 0, 0, &mshell);
+//     pipeline.cmds[0] = cmd;
+//     pipeline.num_cmds = 1;
+//     pipeline.pipeline = 1;
+
+//     exec_pipeline(pipeline, &mshell);
+
+//     return (0);
+// }
 
 // static int  get_argsize(char **arg)
 // {

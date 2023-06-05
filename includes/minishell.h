@@ -38,12 +38,8 @@ typedef struct s_cmd
 {
 	int		argc;
 	char	**argv;
-	char	*rin;
-	char	*rout;
-	char	*rapp;
-	char	*rher;
+	int		redirc;
 	char	**redirs;
-	t_pipeline *pipeline; 
 }	t_cmd;
 
 typedef struct s_cmdtab
@@ -106,7 +102,7 @@ char		**freetab(char **tab, int size);
 char	*expand_cmd(char *name, char *path);
 
 //redirections
-int 		call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell);
+int 		call_redirections(t_cmd *cmd, t_mshell *mshell);
 // int			open_output_file(const char *filename, int flags, mode_t mode);
 // void 		handle_input_redirection(const char **cmdv, int *cmdc, const char **input_file);
 // void 		handle_output_redirection(const char **cmdv, int *cmdc, const char **output_file, const char **append_file)

@@ -71,22 +71,22 @@ char	*arg_stitch(char const *str, int *shift, int *i, t_mshell *mshell)
         *shift += *i;
         *i = -1;
     }
-    if (str[*shift + *i - 1] == '<' || str[*shift + *i - 1] == '>' ||
-        (str[*shift + *i - 1] == '<' && str[*shift + *i] == '<') ||
-        (str[*shift + *i - 1] == '>' && str[*shift + *i] == '>'))
-    {
-        (*i)++;
-        arg = ft_substr(str + *shift - 1, 0, *i);
-        *shift += *i;
-        *i = -1;
-    }
-	if(str[*shift + *i - 1] == '|')
-	{
-		(*i)++;
-		arg = ft_substr(str + *shift - 1, 0, *i);
-		*shift += *i;
-		*i = -1;
-	}
+    // if (str[*shift + *i - 1] == '<' || str[*shift + *i - 1] == '>' ||
+    //     (str[*shift + *i - 1] == '<' && str[*shift + *i] == '<') ||
+    //     (str[*shift + *i - 1] == '>' && str[*shift + *i] == '>'))
+    // {
+    //     (*i)++;
+    //     arg = ft_substr(str + *shift - 1, 0, *i);
+    //     *shift += *i;
+    //     *i = -1;
+    // }
+	// if(str[*shift + *i - 1] == '|')
+	// {
+	// 	(*i)++;
+	// 	arg = ft_substr(str + *shift - 1, 0, *i);
+	// 	*shift += *i;
+	// 	*i = -1;
+	// }
     return (arg);
 }
 
@@ -143,6 +143,26 @@ char	**arg_split(char const *s, char const *sep, int size, t_mshell *mshell)
 	return (tab);
 }
 
+int	setredir(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (i < cmd->argc)
+	{
+		if (cmd->argv[i][0] == '<' || cmd->argv[i][0] == '>')
+		{
+			cmd->redirs = dup_matrix((const char **)cmd->argv + i); //need to free
+			cmd->argv[i] = 0; //probleme pour free ?
+			cmd->redirc = cmd->argc - i;
+			cmd->argc = i;
+			return (i);
+		}
+		i++;
+	}
+	return (i);
+}
+
 t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 {
 	t_cmdtab	*cmdtab;
@@ -160,7 +180,6 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], WHTSPACES,
 				cmdtab->cmdv[i].argc, mshell);
 		free(cmdlines[i]);
-	// 	setredir(cmdtab->cmdv[i]);
 	}
 	free(cmdlines);
 	return (cmdtab);

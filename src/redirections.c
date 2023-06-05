@@ -27,7 +27,7 @@ int open_output_file(char *filename, int flags, mode_t mode) {
 }
 
 void handle_input_redirection(char **argv, int *argc, char **input_file) {
-    for (int i = 1; i < *argc; i++) {
+    for (int i = 0; i < *argc; i++) {
         if (strcmp(argv[i], "<") == 0) {
             if (i + 1 >= *argc) {
                 fprintf(stderr, "Error: no input file specified\n");
@@ -42,7 +42,7 @@ void handle_input_redirection(char **argv, int *argc, char **input_file) {
 }
 
 void handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file) {
-    for (int i = 1; i < *argc; i++) {
+    for (int i = 0; i < *argc; i++) {
         if (strcmp(argv[i], ">") == 0) {
             if (i + 1 >= *argc) {
                 fprintf(stderr, "Error: no output file specified\n");
@@ -66,7 +66,7 @@ void handle_output_redirection(char **argv, int *argc, char **output_file, char 
 }
 
 void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
-    for (int i = 1; i < *argc; i++) {
+    for (int i = 0; i < *argc; i++) {
         if (strcmp(argv[i], "<<") == 0) {
             if (i + 1 >= *argc) {
                 fprintf(stderr, "Error: no delimiter specified\n");
@@ -90,10 +90,8 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
     }
 }
 
-int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
+int call_redirections(t_cmd *cmd, t_mshell *mshell)
 {
-    // int exit_status;
-    (void)cmd;
     (void)mshell;
     int input_fd = STDIN_FILENO;
     int output_fd = STDOUT_FILENO;
@@ -102,9 +100,9 @@ int call_redirections(int argc, char **argv, t_cmd cmd, t_mshell *mshell)
     char *append_file = NULL;
     char *delimiter = NULL;
 
-    handle_input_redirection(argv, &argc, &input_file);
-    handle_output_redirection(argv, &argc, &output_file, &append_file);
-    handle_heredoc_redirection(argv, &argc, &delimiter);
+    handle_input_redirection(cmd->redirs, &cmd->redirc, &input_file);
+    handle_output_redirection(cmd->redirs, &cmd->redirc, &output_file, &append_file);
+    handle_heredoc_redirection(cmd->redirs, &cmd->redirc, &delimiter);
 
     if (input_file != NULL) {
         input_fd = open(input_file, O_RDONLY);

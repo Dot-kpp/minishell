@@ -25,6 +25,7 @@ void	free_cmdtab(t_cmdtab *cmd_tab)
 		while (++arg_i < cmd_tab->cmdv[cmd_i].argc)
 			free(cmd_tab->cmdv[cmd_i].argv[arg_i]);
 		free(cmd_tab->cmdv[cmd_i].argv);
+		free_matrix(cmd_tab->cmdv[cmd_i].redirs);
 	}
 	free(cmd_tab->cmdv);
 	free(cmd_tab);

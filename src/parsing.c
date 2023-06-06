@@ -146,15 +146,23 @@ char	**arg_split(char const *s, char const *sep, int size, t_mshell *mshell)
 int	setredir(t_cmd *cmd)
 {
 	int	i;
+	int	j;
 
 	i = 0;
 	while (i < cmd->argc)
 	{
 		if (cmd->argv[i][0] == '<' || cmd->argv[i][0] == '>')
 		{
-			cmd->redirs = dup_matrix((const char **)cmd->argv + i); //need to free
-			cmd->argv[i] = 0; //probleme pour free ?
+			cmd->redirs = dup_matrix((const char **)cmd->argv + i);
 			cmd->redirc = cmd->argc - i;
+			j = i - 1;
+			while (++j < cmd->argc)
+			{
+				free(cmd->argv[j]);
+				cmd->argv[j] = 0;
+			}
+			
+			// cmd->argv[i] = 0; //probleme pour free ?
 			cmd->argc = i;
 			return (i);
 		}
@@ -177,9 +185,12 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 	while (cmdlines[++i])
 	{
 		cmdtab->cmdv[i].argc = smartcount(cmdlines[i], WHTSPACES, 1);
+		if (cmdtab->cmdv[i].argc == 0)
+			return (printf("Error: empty pipe\n"), NULL);
 		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], WHTSPACES,
 				cmdtab->cmdv[i].argc, mshell);
 		free(cmdlines[i]);
+		setredir(cmdtab->cmdv + i);
 	}
 	free(cmdlines);
 	return (cmdtab);

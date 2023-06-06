@@ -58,14 +58,13 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
     int exit_status;
     pid_t pid;
 
-	if (ft_strncmp(cmd.argv[0], "|", 2) == 0) {
-    	exit_status = exec_pipeline(&cmd.argc, (char **)cmd.argv , mshell);
-        if (exit_status > -1)
-            return exit_status;
-    }
+	// if (ft_strncmp(cmd.argv[0], "|", 2) == 0) {
+    // 	exit_status = exec_pipeline(&cmd.argc, (char **)cmd.argv , mshell);
+    //     if (exit_status > -1)
+    //         return exit_status;
+    // }
 
 		// call_redirections(&cmd, mshell);
-		// printf("AH\n");
 	// if (ft_strncmp(cmd.argv[0], "cd", 3) == 0 || ft_strncmp(cmd.argv[0], "echo", 5) == 0 || ft_strncmp(cmd.argv[0], "exit", 5) == 0 || ft_strncmp(cmd.argv[0], "export", 7) == 0 || ft_strncmp(cmd.argv[0], "unset", 6) == 0) {
     if (is_funnofork(cmd))
 	{

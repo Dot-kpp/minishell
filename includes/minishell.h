@@ -38,10 +38,11 @@ typedef struct s_cmd
 {
 	int		argc;
 	char	**argv;
-	char	*rin;
-	char	*rout;
-	char	*rapp;
-	char	*rher;
+	char 	*input_redir;
+    char 	*output_redir;
+    char	*append_redir;
+	char	*heredoc;
+	int 	bg;
 	char	**redirs;
 	t_pipeline *pipeline; 
 }	t_cmd;

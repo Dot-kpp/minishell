@@ -1,0 +1,14 @@
+total 988
+drwxrwxrwx 1 kpp kpp    4096 Jun  5 20:37 .
+drwxrwxrwx 1 kpp kpp    4096 May 15 16:03 ..
+drwxrwxrwx 1 kpp kpp    4096 Jun  5 20:01 .git
+-rwxrwxrwx 1 kpp kpp     516 May 23 11:27 .gitignore
+drwxrwxrwx 1 kpp kpp    4096 Jun  2 15:40 .vscode
+-rwxrwxrwx 1 kpp kpp    2245 Jun  3 16:23 Makefile
+-rwxrwxrwx 1 kpp kpp      32 Jun  5 12:20 README.md
+drwxrwxrwx 1 kpp kpp    4096 Jun  3 16:23 includes
+drwxrwxrwx 1 kpp kpp    4096 May 15 16:03 lib
+-rwxrwxrwx 1 kpp kpp 1001128 Jun  5 20:36 minishell
+drwxrwxrwx 1 kpp kpp    4096 Jun  5 20:36 src
+-rwxrwxrwx 1 kpp kpp      55 Jun  5 19:48 test.txt
+-rwxrwxrwx 1 kpp kpp       0 Jun  5 20:37 test12.txt

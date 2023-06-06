@@ -44,7 +44,12 @@ static void	minishell(t_mshell *mshell)
 		i = -1;
 		while (++i < cmd_tab->cmdc) // EXEC
 		{
-			 printf("cmd_tab->cmdv[i] = %s %s\n", cmd_tab->cmdv[i].argv[0], cmd_tab->cmdv[i].argv[1]);
+			int j = 0;
+			while(cmd_tab->cmdv[i].argv[j])
+			{
+				printf("\033[1;32mcmd_tab->cmdv[%d].argv[%d] = %s\033[0m\n", i, j, cmd_tab->cmdv[i].argv[j]);
+				j++;
+			}
 			mshell->exit_status = exec_cmd(cmd_tab->cmdv[i], mshell);
 		}
 		free_cmdtab(cmd_tab);

@@ -78,7 +78,7 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
         if (exit_status > -1) {
             exit(EXIT_FAILURE);
         }
-		printf("mshell: command not found: %s\n", cmd.argv[0]);
+		printf("\033[1;31mmshell: command not found: %s\n", cmd.argv[0]);
         exit(exit_status);
     } else {
         waitpid(pid, &exit_status, 0);

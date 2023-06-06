@@ -150,15 +150,15 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 	int			i;
 
 	cmdtab = ft_calloc(1, sizeof(t_cmdtab));
-	cmdtab->cmdc = smartcount(prompt, "|", 0);
+	cmdtab->cmdc = smartcount(prompt, "*", 0);
 	cmdtab->cmdv = ft_calloc(cmdtab->cmdc, sizeof(t_cmd));
-	cmdlines = cmd_split(prompt, '|', cmdtab->cmdc);
+	cmdlines = cmd_split(prompt, '*', cmdtab->cmdc);
 	i = -1;
 	while (cmdlines[++i])
 	{
 		cmdtab->cmdv[i].argc = smartcount(cmdlines[i], WHTSPACES, 1);
 		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], WHTSPACES,
-				cmdtab->cmdv[i].argc, mshell);
+				cmdtab->cmdv[i].argc, mshell);	
 		free(cmdlines[i]);
 	// 	setredir(cmdtab->cmdv[i]);
 	}

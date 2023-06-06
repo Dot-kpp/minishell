@@ -43,15 +43,10 @@ static void	minishell(t_mshell *mshell)
 		cmd_tab = tokenize(prompt, mshell); //PARSING
 		i = -1;
 		while (++i < cmd_tab->cmdc) // EXEC
+		{
+			 printf("cmd_tab->cmdv[i] = %s %s\n", cmd_tab->cmdv[i].argv[0], cmd_tab->cmdv[i].argv[1]);
 			mshell->exit_status = exec_cmd(cmd_tab->cmdv[i], mshell);
-		// printf("%d\n", mshell->exit_status);
-		// if (mshell->exit_status != -1)
-		// {
-		// 	free_cmdtab(cmd_tab);
-		// 	continue;
-		// }
-		// start_piping(envl, data);
-		// free_input();
+		}
 		free_cmdtab(cmd_tab);
 		free(prompt);
 	}

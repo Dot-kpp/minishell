@@ -40,19 +40,29 @@ char	*expand_cmd(char *name, char *path)
 	return (freetab(paths, len), NULL);
 }
 
+int has_pipe(t_cmd cmd) {
+    int i = 0;
+    while (i < cmd.argc) {
+        if (strcmp(cmd.argv[i], "|") == 0) {
+            return 1;
+        }
+        i++;
+    }
+    return 0;
+}
 
 int exec_cmd(t_cmd cmd, t_mshell *mshell)
 {
     int exit_status;
     pid_t pid;
 
-	if (ft_strncmp(cmd.argv[0], "|", 2) == 0) {
+	if (has_pipe(cmd)) {
+		printf("has pipe\n");
     	exit_status = exec_pipeline(&cmd.argc, (char **)cmd.argv , mshell);
         if (exit_status > -1)
             return exit_status;
     }
-
-	if (ft_strncmp(cmd.argv[0], "cd", 3) == 0 || ft_strncmp(cmd.argv[0], "echo", 5) == 0 || ft_strncmp(cmd.argv[0], "exit", 5) == 0 || ft_strncmp(cmd.argv[0], "export", 7) == 0 || ft_strncmp(cmd.argv[0], "unset", 6) == 0) {
+	else if (ft_strncmp(cmd.argv[0], "cd", 3) == 0 || ft_strncmp(cmd.argv[0], "echo", 5) == 0 || ft_strncmp(cmd.argv[0], "exit", 5) == 0 || ft_strncmp(cmd.argv[0], "export", 7) == 0 || ft_strncmp(cmd.argv[0], "unset", 6) == 0) {
         exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
         if (exit_status > -1)
             return exit_status;
@@ -66,10 +76,10 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
 		call_redirections(cmd.argc, (char **)cmd.argv, cmd, mshell);
         exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
         if (exit_status > -1) {
-            exit(exit_status);
+            exit(EXIT_FAILURE);
         }
 		printf("mshell: command not found: %s\n", cmd.argv[0]);
-        exit(EXIT_FAILURE);
+        exit(exit_status);
     } else {
         waitpid(pid, &exit_status, 0);
         return WEXITSTATUS(exit_status);

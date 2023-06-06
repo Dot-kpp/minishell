@@ -1,1 +1,4 @@
 # minishell
+world
+hello
+avion

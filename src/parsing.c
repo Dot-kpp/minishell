@@ -188,7 +188,7 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 		if (cmdtab->cmdv[i].argc == 0)
 			return (printf("Error: empty pipe\n"), NULL);
 		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], WHTSPACES,
-				cmdtab->cmdv[i].argc, mshell);
+				cmdtab->cmdv[i].argc, mshell);	
 		free(cmdlines[i]);
 		setredir(cmdtab->cmdv + i);
 	}

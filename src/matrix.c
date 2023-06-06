@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	get_matrixlen(const char **matrix)
+static int	get_matrixlen(const char **matrix)
 {
 	int	i;
 
@@ -76,35 +76,6 @@ char	**dup_matrix(const char **matrix)
 	return (new_matrix);
 }
 
-// void print_sortedmatrix(char const **matrix)
-// {
-// 	int		i;
-// 	int		size;
-// 	char	*line;
-
-// 	size = get_matrixlen(matrix);
-// 	line = *matrix;
-// 	return (0);
-// }
-
-// char **addto_matrix(const char **matrix, const char *line)
-// {
-// 	//if exist
-// 	//  modify
-// 	//else
-// 	// append matrix
-// 	return (0);
-// }
-
-void print_matrix(const char **matrix)
-{
-	int	i;
-
-	i = -1;
-	while (matrix[++i])
-		printf("%s\n", matrix[i]);
-}
-
 void	free_matrix(char **matrix)
 {
 	int	i;
@@ -118,17 +89,3 @@ void	free_matrix(char **matrix)
 	*matrix = 0;
 	free(matrix);
 }
-
-// int main(int argc, char const *argv[], char const **envp)
-// {
-// 	char	**mat;
-
-// 	mat = dup_matrix(envp);
-// 	mat = shrink_matrix((const char **)mat, "ZDOTDIR=/Users/fgeslin");
-// 	mat = shrink_matrix((const char **)mat, "SHELL=/bin/zsh");
-// 	mat = expand_matrix((const char **)mat, "NEWLINE=succes");
-// 	mat = shrink_matrix((const char **)mat, "VS");
-// 	print_matrix((char const **)mat);
-// 	free_matrix(mat);
-// 	return 0;
-// }

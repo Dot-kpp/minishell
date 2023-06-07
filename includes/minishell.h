@@ -27,13 +27,6 @@
 
 # define WHTSPACES "\t\n\v\f\r \0"
 
-typedef struct s_cmd t_cmd;
-
-typedef struct s_pipeline {
-    int num_cmds;
-    t_cmd *cmds;
-} t_pipeline;
-
 typedef struct s_cmd
 {
 	int		argc;
@@ -63,11 +56,11 @@ int ms_execute(char **args);
 int test_main();
 
 //matrix
-int		get_matrixlen(const char **matrix);
 char	**expand_matrix(const char **matrix, const char *new_line);
 char	**shrink_matrix(const char **matrix, const char *to_remove);
 char	**dup_matrix(const char **matrix);
 void	print_matrix(const char **matrix);
+void 	print_sortedmatrix(char const **matrix);
 void	free_matrix(char **matrix);
 
 //env

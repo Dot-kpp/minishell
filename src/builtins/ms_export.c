@@ -19,7 +19,7 @@ int	ms_export(int argc, char const *argv[], t_mshell *mshell)
 	int		i;
 
 	if (argc == 1)
-		return (print_matrix((const char **)mshell->env), 0);
+		return (print_sortedmatrix((const char **)mshell->env), 0);
 	if (argc != 2)
 		return (printf("ft_export: bad arguments\n"), 1);
 	i = -1;

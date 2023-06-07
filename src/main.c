@@ -13,20 +13,17 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-int ft_isspaces(char *str)
+int ft_isspacesonly(char *str)
 {
 	int i;
 
 	i = -1;
 	while (str[++i])
-		while ((str[i] == ' ' || str[i] == '\t' 
-		|| str[i] == '\n' || str[i] == '\v'))
-		{
-			if (str[i + 1] == '\0')
-				return (1);
-			i++;
-		}
-	return (0);
+	{
+		if (!ft_strchr("\t\n\v\f\r ", str[i]))
+			return (0);
+	}
+	return (1);
 }
 
 //start running minishell overlay
@@ -50,7 +47,7 @@ static void	minishell(t_mshell *mshell)
 		prompt = readline((const char *)waiting_prompt);
 		if (prompt == NULL) // If input is NULL, user has pressed Ctrl-D or EOF has been reached
 			return ;
-		if (ft_strlen(prompt) == 0 || ft_isspaces(prompt))// If input is empty, continue to next loop iteration
+		if (ft_strlen(prompt) == 0 || ft_isspacesonly(prompt))// If input is empty, continue to next loop iteration
 		{
 			free(prompt);
 			continue ;

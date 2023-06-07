@@ -53,10 +53,10 @@ int	is_funnofork(t_cmd cmd)
 	return (0);
 }
 
-int exec_cmd(t_cmd cmd, t_mshell *mshell)
+int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 {
-    int exit_status;
-    pid_t pid;
+    int		exit_status;
+    pid_t	pid;
 
     if (is_funnofork(cmd))
 	{
@@ -65,11 +65,13 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
             return exit_status;
     }
     pid = fork();
-    if (pid == -1) {
+    if (pid == -1)
+	{
         perror("fork");
         exit(EXIT_FAILURE);
     }
-    if (pid == 0) {
+    if (pid == 0)
+	{
 		call_redirections(&cmd, mshell);
 		exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
         if (exit_status > -1)
@@ -80,7 +82,9 @@ int exec_cmd(t_cmd cmd, t_mshell *mshell)
             exit(exit_status);
 		printf("mshell: command not found: %s\n", cmd.argv[0]);
         exit(EXIT_FAILURE);
-    } else {
+    }
+	else
+	{
         waitpid(pid, &exit_status, 0);
         return WEXITSTATUS(exit_status);
     }

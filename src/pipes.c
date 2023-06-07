@@ -57,8 +57,9 @@ int exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell) {
                 close(pipefd[1]);
             }
             // Execute command
-            execvp(cmd_tab->cmdv[i].argv[0], cmd_tab->cmdv[i].argv);
-            perror("execvp");
+            // execvp(cmd_tab->cmdv[i].argv[0], cmd_tab->cmdv[i].argv);
+            exec_cmd(cmd_tab->cmdv[i], mshell);
+            // perror("execvp");
             exit(EXIT_FAILURE);
         } else {
             // Parent process

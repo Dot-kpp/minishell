@@ -111,9 +111,13 @@ void free_matrix(char **matrix)
     while (matrix[num_rows] != NULL) {
         num_rows++;
     }
-    for (int i = 0; i < num_rows; i++) {
+    
+    int i = 0;
+    while (i < num_rows) {
         free(matrix[i]);
+        i++;
     }
+    
     free(matrix);
 }
 

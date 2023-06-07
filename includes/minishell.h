@@ -78,7 +78,8 @@ int		is_valid_envp(const char *str, int n);
 
 //pipes
 t_cmd		*parse_pipe_cmd(char const *str, int *shift, int *i, t_mshell *mshell);
-int 		exec_pipeline(int *argc, char **argv, t_mshell *mshell);
+// int 		exec_pipeline(int *argc, char **argv, t_mshell *mshell);
+int exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell);
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);
 
 

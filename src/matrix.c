@@ -105,19 +105,31 @@ void print_matrix(const char **matrix)
 		printf("%s\n", matrix[i]);
 }
 
-void	free_matrix(char **matrix)
+void free_matrix(char **matrix)
 {
-	int	i;
-
-	i = -1;
-	while (matrix[++i])
-	{
-		*(matrix[i]) = 0;
-		free(matrix[i]);
-	}
-	*matrix = 0;
-	free(matrix);
+    int num_rows = 0;
+    while (matrix[num_rows] != NULL) {
+        num_rows++;
+    }
+    for (int i = 0; i < num_rows; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
 }
+
+// void	free_matrix(char **matrix)
+// {
+// 	int	i;
+
+// 	i = -1;
+// 	while (matrix[++i])
+// 	{
+// 		*(matrix[i]) = 0;
+// 		free(matrix[i]);
+// 	}
+// 	*matrix = 0;
+// 	free(matrix);
+// }
 
 // int main(int argc, char const *argv[], char const **envp)
 // {

@@ -52,7 +52,7 @@ void	init_env(char const *env[], t_mshell *mshell)
 		ms_setenv("PWD", cwd, mshell);
 	if (!ms_getenv("PATH", (const char **)mshell->env))
 		ms_setenv("PATH", "/usr/local/sbin:/usr/local/bin:/usr/bin:/bin",
-				mshell);
+			mshell);
 	temp = ms_getenv("SHLVL", (const char **)mshell->env);
 	if (!temp || ft_atoi(temp) < 1)
 		ms_setenv("SHLVL", "1", mshell);

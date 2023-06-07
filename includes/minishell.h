@@ -44,8 +44,8 @@ typedef struct s_cmdtab
 
 typedef struct s_mshell
 {
-	char	exit_status;
-	char	**env;
+	unsigned char	exit_status;
+	char			**env;
 }	t_mshell;
 
 
@@ -84,6 +84,7 @@ void		new_prompt_signal(void);
 
 //parsing
 t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell);
+char		**arg_split(char const *s, char const *sep, int size, t_mshell *mshell);
 //parsing utils
 char		*ft_append(char *s1, char const *s2, int n);
 int			nextquote(char const *s);

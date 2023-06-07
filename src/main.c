@@ -57,6 +57,13 @@ static void	minishell(t_mshell *mshell)
 		}
 		add_history(prompt); // Add input to history
 		cmd_tab = tokenize(prompt, mshell); //PARSING
+		if (!cmd_tab)
+		{
+		// free_cmdtab(cmd_tab);
+			free(prompt);
+			mshell->exit_status = -1;
+			continue;
+		}
 		i = -1;
 		while (++i < cmd_tab->cmdc) // EXEC
 		{
@@ -68,7 +75,7 @@ static void	minishell(t_mshell *mshell)
 			else
 				mshell->exit_status = exec_cmd(cmd_tab->cmdv[i], mshell);
 		}
-		continue;
+		// continue;
 		free_cmdtab(cmd_tab);
 		free(prompt);
 	}

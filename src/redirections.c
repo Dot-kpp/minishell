@@ -23,13 +23,13 @@ int open_output_file(char *filename, int flags, mode_t mode) {
     if (fd == -1) {
         perror("open");
     }
-    return fd;
+    return fd; 
 }
 
 void handle_input_redirection(char **argv, int *argc, char **input_file) {
     int i = 0;
     while (i < *argc) {
-        if (ft_strncmp(argv[i], "<", 1) == 0) {
+        if (ft_strcmp(argv[i], "<") == 0) {
             if (i + 1 >= *argc) {
                 char *error_message = "Error: no input file specified\n";
                 write(STDERR_FILENO, error_message, ft_strlen(error_message));
@@ -47,7 +47,7 @@ void handle_input_redirection(char **argv, int *argc, char **input_file) {
 void handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file) {
     int i = 0;
     while (i < *argc) {
-        if (ft_strncmp(argv[i], ">", 1) == 0) {
+        if (ft_strcmp(argv[i], ">") == 0) {
             if (i + 1 >= *argc) {
                 char *error_message = "Error: no output file specified\n";
                 write(STDERR_FILENO, error_message, ft_strlen(error_message));
@@ -57,7 +57,7 @@ void handle_output_redirection(char **argv, int *argc, char **output_file, char 
             ft_memmove(&argv[i], &argv[i + 2], (*argc - i - 1) * sizeof(char *));
             *argc -= 2;
             i--;
-        } else if (ft_strncmp(argv[i], ">>", 2) == 0) {
+        } else if (ft_strcmp(argv[i], ">>") == 0) {
             if (i + 1 >= *argc) {
                 char *error_message = "Error: no output file specified\n";
                 write(STDERR_FILENO, error_message, ft_strlen(error_message));
@@ -75,7 +75,7 @@ void handle_output_redirection(char **argv, int *argc, char **output_file, char 
 void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
     int i = 0;
     while (i < *argc) {
-        if (ft_strncmp(argv[i], "<<", 2) == 0) {
+        if (ft_strcmp(argv[i], "<<") == 0) {
             if (i + 1 >= *argc) {
                 char *error_message = "Error: no delimiter specified\n";
                 write(STDERR_FILENO, error_message, ft_strlen(error_message));
@@ -86,15 +86,15 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
             *argc -= 2;
             i--;
             char *line = NULL;
-            size_t len = 0;
-            ssize_t nread;
-            while ((nread = getline(&line, &len, stdin)) != -1) {
-                if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) == 0) {
+            while ((line = get_next_line(STDIN_FILENO)) != NULL) {
+                if (ft_strcmp(line, *delimiter) == 0) {
+                    free(line);
                     break;
                 }
-                write(STDOUT_FILENO, line, nread);
+                write(STDOUT_FILENO, line, ft_strlen(line));
+                write(STDOUT_FILENO, "\n", 1);
+                free(line);
             }
-            free(line);
         }
         i++;
     }
@@ -121,19 +121,20 @@ int call_redirections(t_cmd *cmd, t_mshell *mshell)
             return -1;
         }
     }
-    if (output_file != NULL) {
-        output_fd = open_output_file(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (output_fd == -1) {
-            perror("open");
-            return -1;
-        }
-    } else if (append_file != NULL) {
+    else if (append_file != NULL) {
         output_fd = open_output_file(append_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
         if (output_fd == -1) {
             perror("open");
             return -1;
         }
     }
+    else if (output_file != NULL) {
+        output_fd = open_output_file(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (output_fd == -1) {
+            perror("open");
+            return -1;
+        }
+    } 
     if (dup2(input_fd, STDIN_FILENO) == -1) {
         perror("dup2");
         return -1;

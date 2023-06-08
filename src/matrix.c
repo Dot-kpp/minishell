@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static int	get_matrixlen(const char **matrix)
+int	get_matrixlen(const char **matrix)
 {
 	int	i;
 
@@ -29,7 +29,14 @@ char	**expand_matrix(const char **matrix, const char *new_line)
 
 	size = get_matrixlen(matrix);
 	new_matrix = ft_calloc(size + 2, sizeof(*new_matrix));
+	if (!new_matrix)
+		return (free(matrix), NULL);
 	new_matrix[size] = ft_strdup(new_line);
+	if (!new_matrix[size])
+	{
+		free(new_matrix);
+		return (free(matrix), NULL);
+	}
 	while (--size >= 0)
 		new_matrix[size] = (char *)matrix[size];
 	return (free(matrix), new_matrix);

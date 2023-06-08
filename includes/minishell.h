@@ -56,6 +56,7 @@ int ms_execute(char **args);
 int test_main();
 
 //matrix
+int		get_matrixlen(const char **matrix);
 char	**expand_matrix(const char **matrix, const char *new_line);
 char	**shrink_matrix(const char **matrix, const char *to_remove);
 char	**dup_matrix(const char **matrix);
@@ -84,7 +85,9 @@ void		new_prompt_signal(void);
 
 //parsing
 t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell);
-char		**arg_split(char const *s, char const *sep, int size, t_mshell *mshell);
+char		**arg_split(char const *s, t_mshell *mshell);
+char		**redir_split(char const *s, t_mshell *mshell);
+int			arg_quotes(char **arg, char const *str, int len, t_mshell *mshell);
 //parsing utils
 char		*ft_append(char *s1, char const *s2, int n);
 int			nextquote(char const *s);

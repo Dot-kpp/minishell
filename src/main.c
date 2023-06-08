@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/20 13:08:47 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/06/08 17:24:50 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/06/08 17:36:54 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,6 @@ static void	minishell(t_mshell *mshell)
 int	main(int ac, char const **av, char const **envp)
 {
 	t_mshell	mshell;
-
-	(void)ac;
-	(void)av;
-	init_env(envp, &mshell);
-	minishell(&mshell);
-	// exit_all();
-	clear_history();
-	free_matrix(mshell.env);
-	return (0);
-}
 
 	(void)ac;
 	(void)av;

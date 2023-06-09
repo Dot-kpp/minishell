@@ -33,11 +33,11 @@ char	*expand_cmd(char *name, char *path)
 		temp_path = ft_append(temp_path, "/", 2);
 		temp_path = ft_append(temp_path, name, ft_strlen(name) + 1);
 		if (access(temp_path, F_OK) == 0)
-			return (freetab(paths, len), temp_path);
+			return (free_matrix(paths), temp_path);
 		free(temp_path);
 		i++;
 	}
-	return (freetab(paths, len), NULL);
+	return (free_matrix(paths), NULL);
 }
 
 int	is_funnofork(t_cmd cmd)

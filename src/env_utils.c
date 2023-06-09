@@ -26,14 +26,20 @@ static void	ms_setenv(char *name, char *value, t_mshell *mshell)
 char	*ms_getenv(char const *var, char const **env)
 {
 	char	*eq;
+	char	*ret;
 	int		i;
 
 	i = 0;
+	if (!var || !env)
+		return (NULL);
 	eq = ft_strjoin(var, "=");
 	while (env[i])
 	{
 		if (!ft_strncmp(eq, env[i], ft_strlen(eq)))
-			return (free(eq), (char *)(env[i] + ft_strlen(eq)));
+		{
+			ret = (char *)env[i] + ft_strlen(eq);
+			return (free(eq), ret);
+		}
 		i++;
 	}
 	return (free(eq), NULL);

@@ -85,16 +85,14 @@ char	**dup_matrix(const char **matrix)
 
 void	free_matrix(char **matrix)
 {
-    int num_rows = 0;
-    while (matrix[num_rows] != NULL) {
-        num_rows++;
-    }
-    
-    int i = 0;
-    while (i < num_rows) {
-        free(matrix[i]);
-        i++;
-    }
-    
-    free(matrix);
+	int	num_rows;
+	int	i;
+
+	num_rows = 0;
+	while (matrix[num_rows] != NULL)
+		num_rows++;
+	i = -1;
+	while (++i < num_rows)
+		free(matrix[i]);
+	free(matrix);
 }

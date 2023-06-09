@@ -95,7 +95,6 @@ int			smartcount(char const *s, char const *sep, int trim_sep);
 
 //freeing
 void		free_cmdtab(t_cmdtab *cmd_tab);
-char		**freetab(char **tab, int size);
 
 char	*expand_cmd(char *name, char *path);
 

@@ -94,7 +94,9 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
                     write(STDOUT_FILENO, "heredoc>", 9);
                 else if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) == 0) {
                     free(line);
-                    exit(1);
+                    // exit(1);
+                    write(STDOUT_FILENO, temp_file, ft_strlen(temp_file));
+                    break;
                 }
                 free(line);
             }

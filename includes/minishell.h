@@ -41,43 +41,37 @@ typedef struct s_cmdtab
 	t_cmd	*cmdv;
 }	t_cmdtab;
 
-
 typedef struct s_mshell
 {
 	unsigned char	exit_status;
 	char			**env;
 }	t_mshell;
 
-
 //Unit tests, remove before pushing project for grading
-char **ms_parse_input(char *input);
-void ms_free_args(char **args);
-int ms_execute(char **args);
-int test_main();
+char		**ms_parse_input(char *input);
+void		ms_free_args(char **args);
+int			ms_execute(char **args);
+int			test_main(void);
 
 //matrix
-int		get_matrixlen(const char **matrix);
-char	**expand_matrix(const char **matrix, const char *new_line);
-char	**shrink_matrix(const char **matrix, const char *to_remove);
-char	**dup_matrix(const char **matrix);
-void	print_matrix(const char **matrix);
-void 	print_sortedmatrix(char const **matrix);
-void	free_matrix(char **matrix);
+int			get_matrixlen(const char **matrix);
+char		**expand_matrix(const char **matrix, const char *new_line);
+char		**shrink_matrix(const char **matrix, const char *to_remove);
+char		**dup_matrix(const char **matrix);
+void		print_matrix(const char **matrix);
+void		print_sortedmatrix(char const **matrix);
+void		free_matrix(char **matrix);
 
 //env
-char	*ms_getenv(char const *var, char const **env);
-void	init_env(char const *env[], t_mshell *mshell);
-int		update_envp(const char *str, t_mshell *mshell);
-int		is_valid_envp(const char *str, int n);
+char		*ms_getenv(char const *var, char const **env);
+void		init_env(char const *env[], t_mshell *mshell);
+int			update_envp(const char *str, t_mshell *mshell);
+int			is_valid_envp(const char *str, int n);
 
 //pipes
-t_cmd		*parse_pipe_cmd(char const *str, int *shift, int *i, t_mshell *mshell);
-// int 		exec_pipeline(int *argc, char **argv, t_mshell *mshell);
-int exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell);
+t_cmd		*parse_pipe_cmd(char const *str, int *shift, int *i, t_mshell *ms);
+int			exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell);
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);
-
-
-// void		start_piping(t_list **envl, t_data *data);
 
 //signals
 void		signal_handler(int signo);
@@ -96,13 +90,9 @@ int			smartcount(char const *s, char const *sep, int trim_sep);
 //freeing
 void		free_cmdtab(t_cmdtab *cmd_tab);
 
-char	*expand_cmd(char *name, char *path);
+char		*expand_cmd(char *name, char *path);
 
 //redirections
-int 		call_redirections(t_cmd *cmd, t_mshell *mshell);
-// int			open_output_file(const char *filename, int flags, mode_t mode);
-// void 		handle_input_redirection(const char **cmdv, int *cmdc, const char **input_file);
-// void 		handle_output_redirection(const char **cmdv, int *cmdc, const char **output_file, const char **append_file)
-// void 		handle_heredoc_redirection(const char **cmdv, int *cmdc, const char **delimiter);
+int			call_redirections(t_cmd *cmd, t_mshell *mshell);
 
 #endif

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSHELL_BUILTINS_H
-# define MSHELL_BUILTINS_H
+#ifndef MS_BUILTINS_H
+# define MS_BUILTINS_H
 
 # include "minishell.h"
 

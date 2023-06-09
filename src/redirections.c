@@ -74,6 +74,7 @@ void handle_output_redirection(char **argv, int *argc, char **output_file, char 
 
 void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
     int i = 0;
+    char *temp_file = NULL;
     while (i < *argc) {
         if (ft_strcmp(argv[i], "<<") == 0) {
             if (i + 1 >= *argc) {
@@ -81,18 +82,20 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
                 write(STDERR_FILENO, error_message, ft_strlen(error_message));
                 exit(1);
             }
+            write(STDOUT_FILENO, "heredoc>", 9);
             *delimiter = argv[i + 1];
             ft_memmove(&argv[i], &argv[i + 2], (*argc - i - 1) * sizeof(char *));
             *argc -= 2;
             i--;
             char *line = NULL;
-            while ((line = get_next_line(STDIN_FILENO)) != NULL) {
-                if (ft_strcmp(line, *delimiter) == 0) {
+            while ((line = get_next_line(STDIN_FILENO))) {
+                temp_file = ft_strjoin(temp_file, line);
+                if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) != 0) 
+                    write(STDOUT_FILENO, "heredoc>", 9);
+                else if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) == 0) {
                     free(line);
-                    break;
+                    exit(1);
                 }
-                write(STDOUT_FILENO, line, ft_strlen(line));
-                write(STDOUT_FILENO, "\n", 1);
                 free(line);
             }
         }
@@ -118,7 +121,7 @@ int call_redirections(t_cmd *cmd, t_mshell *mshell)
         input_fd = open(input_file, O_RDONLY);
         if (input_fd == -1) {
             perror("open");
-            return -1;
+            exit (-1);
         }
     }
     else if (append_file != NULL) {

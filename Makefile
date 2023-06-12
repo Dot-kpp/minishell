@@ -14,8 +14,11 @@ SRCS = 	./src/main.c \
 		./src/signals.c  \
 		./src/pipes.c \
 		./src/ft_append.c \
+		./src/ft_perror.c \
 		./src/parsing.c \
+		./src/parsing_cmds.c \
 		./src/parsing_args.c \
+		./src/parsing_redirs.c \
 		./src/parsing_utils.c \
 		./src/exec.c \
 		./src/free.c \

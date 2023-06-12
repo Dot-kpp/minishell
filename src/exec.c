@@ -80,8 +80,8 @@ int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 				ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
         if (exit_status > -1)
             exit(exit_status);
-		printf("mshell: command not found: %s\n", cmd.argv[0]);
-        exit(EXIT_FAILURE);
+		ft_perror(1, "command not found", cmd.argv[0]);
+        exit(127);
     }
 	else
 	{

@@ -22,16 +22,18 @@ int	get_matrixlen(const char **matrix)
 	return (i);
 }
 
-char	**expand_matrix(const char **matrix, const char *new_line)
+char	**expand_matrix(const char **matrix, char *new_line)
 {
 	int		size;
 	char	**new_matrix;
 
+	if (!matrix || !new_line)
+		return (NULL);
 	size = get_matrixlen(matrix);
 	new_matrix = ft_calloc(size + 2, sizeof(*new_matrix));
 	if (!new_matrix)
-		return (free(matrix), NULL);
-	new_matrix[size] = ft_strdup(new_line);
+		return (NULL);
+	new_matrix[size] = new_line;
 	if (!new_matrix[size])
 	{
 		free(new_matrix);

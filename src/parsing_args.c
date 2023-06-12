@@ -13,6 +13,21 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
+int	endofarg(const char *str, int i)
+{
+	if (str[i] >= '0' && str[i] <= '9')
+	{
+		while (str[i] >= '0' && str[i] <= '9')
+			i++;
+	}
+	else
+	{
+		while (isalnum(str[i]) || str[i] == '_')
+			i++;
+	}
+	return (i);
+}
+
 int	arg_expand2(char **s, const char *str, t_mshell *mshell)
 {
 	char	*temp;
@@ -25,10 +40,9 @@ int	arg_expand2(char **s, const char *str, t_mshell *mshell)
 		*s = ft_append(*s, ft_itoa((int)mshell->exit_status),
 				ft_strlen(ft_itoa((int)mshell->exit_status)));
 	}
-	else
+	else if (ft_isalnum(str[i]) || str[i] == '_')
 	{
-		while (isalnum(str[i]) || str[i] == '_')
-			i++;
+		i = endofarg(str, i);
 		temp = ft_substr(str, 0, i);
 		if (ms_getenv(temp, (const char **)mshell->env))
 			*s = ft_append(*s,
@@ -36,6 +50,8 @@ int	arg_expand2(char **s, const char *str, t_mshell *mshell)
 					strlen(ms_getenv(temp, (const char **)mshell->env)));
 		free(temp);
 	}
+	else
+		*s = ft_append(*s, "$", 2);
 	return (i);
 }
 
@@ -60,33 +76,33 @@ char	*arg_expand(char *s, const char *str, int len, t_mshell *mshell)
 	return (s);
 }
 
-int	arg_quotes(char **arg, char const *str, int len, t_mshell *mshell)
+char	*arg_quotes(char const *str, int len, t_mshell *mshell)
 {
-	int		shift;
-	int		i;
+	int		i[2];
+	char	*arg;
 
-	*arg = ft_calloc(1, sizeof(char));
-	if (!*arg)
-		return (0);
-	shift = 0;
-	i = -1;
-	while (++i < len - shift)
+	arg = ft_calloc(1, sizeof(char));
+	if (!arg)
+		return (NULL);
+	i[0] = -1;
+	i[1] = 0;
+	while (++i[0] < len - i[1])
 	{
-		if (!(str[shift + i] == '\'' || str[shift + i] == '\"'))
+		if (!(str[i[1] + i[0]] == '\'' || str[i[1] + i[0]] == '\"'))
 			continue ;
-		*arg = arg_expand(*arg, str + shift, i, mshell);
-		shift += i;
-		i = nextquote(str + shift);
-		if (str[shift] == '\'')
-			*arg = ft_append(*arg, str + shift + 1, i - 1);
-		if (str[shift] == '\"')
-			*arg = arg_expand(*arg, str + shift + 1, i - 1, mshell);
-		shift += i + 1;
-		i = -1;
+		arg = arg_expand(arg, str + i[1], i[0], mshell);
+		i[1] += i[0];
+		i[0] = nextquote(str + i[1]);
+		if (str[i[1]] == '\'')
+			arg = ft_append(arg, str + i[1] + 1, i[0] - 1);
+		if (str[i[1]] == '\"')
+			arg = arg_expand(arg, str + i[1] + 1, i[0] - 1, mshell);
+		i[1] += i[0] + 1;
+		i[0] = -1;
 	}
-	if (i <= len - shift)
-		*arg = arg_expand(*arg, str + shift, i, mshell);
-	return (1);
+	if (i[0] <= len - i[1])
+		arg = arg_expand(arg, str + i[1], i[0], mshell);
+	return (arg);
 }
 
 char	**arg_split(char const *s, t_mshell *mshell)
@@ -94,22 +110,17 @@ char	**arg_split(char const *s, t_mshell *mshell)
 	char	**tab;
 	char	*str;
 	int		len;
-	int		count;
-	char	*temp;
 
 	str = (char *)s;
 	tab = ft_calloc(1, sizeof(*tab));
 	if (!tab)
 		return (perror("cmd_split: "), (char **) NULL);
-	count = -1;
 	while (*str && *str != '<' && *str != '>')
 	{
 		len = 0;
 		while (!ft_strchr("\t\n\v\f\r <>\0", str[len]) && str[len])
 			len += nextquote(str + len) + 1;
-		arg_quotes(&temp, str, len, mshell);
-		tab = expand_matrix((const char **)tab, temp);
-		free(temp);
+		tab = expand_matrix((const char **)tab, arg_quotes(str, len, mshell));
 		if (!tab)
 			return (perror("cmd_split: "), NULL);
 		while (ft_strchr(WHTSPACES, str[len]) && str[len])

@@ -12,19 +12,21 @@
 
 #include "../../includes/minishell.h"
 
-static int	checkflag(const char *str)
+static int	isflag(const char *str)
 {
 	int	i;
 
-	i = 1;
-	while (str[i] == 'n')
-		i++;
-	if (i == (int)ft_strlen(str))
-		return (1);
-	return (0);
+	i = 0;
+	if (str[i] != '-')
+		return (0);
+	while (str[++i])
+	{
+		if (str[i] != 'n')
+			return (0);
+	}
+	return (1);
 }
 
-//Output to be defined
 int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 {
 	int	i;
@@ -33,19 +35,14 @@ int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 	(void)mshell;
 	i = 0;
 	newline = 1;
-	while (++i < argc)
+	while (isflag(argv[++i]))
+		newline = 0;
+	while (i < argc)
 	{
-		if (i == 1 && !ft_strncmp(argv[1], "-n", 2))
-		{
-			if (checkflag(argv[1]))
-			{
-				newline = 0;
-				continue ;
-			}
-		}
 		printf("%s", argv[i]);
 		if (i + 1 < argc)
 			printf(" ");
+		i++;
 	}
 	if (newline)
 		printf("\n");

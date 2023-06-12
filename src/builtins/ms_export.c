@@ -21,14 +21,14 @@ int	ms_export(int argc, char const *argv[], t_mshell *mshell)
 	if (argc == 1)
 		return (print_sortedmatrix((const char **)mshell->env), 0);
 	if (argc != 2)
-		return (printf("ft_export: bad arguments\n"), 1);
+		return (ft_perror(1, "ft_export: bad arguments"), 1);
 	i = -1;
 	while (argv[1][++i] != '=')
 		if (!argv[1][i])
-			return (printf("ft_export: bad arguments\n"), 1);
+			return (ft_perror(1, "ft_export: bad arguments"), 1);
 	if (is_valid_envp(argv[1], i))
 		return (update_envp(argv[1], mshell));
 	else
-		return (printf("ft_export: not valid in this context: %s\n",
+		return (ft_perror(2, "ft_export: not valid in this context:",
 				argv[1]), 1);
 }

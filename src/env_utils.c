@@ -89,7 +89,7 @@ int	update_envp(const char *str, t_mshell *mshell)
 		}
 		j++;
 	}
-	mshell->env = expand_matrix((const char **)mshell->env, str);
+	mshell->env = expand_matrix((const char **)mshell->env, ft_strdup(str));
 	if (!mshell->env)
 		return (perror("update_envp"), 1);
 	return (0);

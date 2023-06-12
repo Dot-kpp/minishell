@@ -22,6 +22,8 @@
 # include <signal.h>
 # include <limits.h>
 
+# define MATRIX const char **
+
 # define MAX_PATH_LENGTH 1024
 # define MAX_ARGS 128
 
@@ -55,7 +57,7 @@ int			test_main(void);
 
 //matrix
 int			get_matrixlen(const char **matrix);
-char		**expand_matrix(const char **matrix, const char *new_line);
+char		**expand_matrix(const char **matrix, char *new_line);
 char		**shrink_matrix(const char **matrix, const char *to_remove);
 char		**dup_matrix(const char **matrix);
 void		print_matrix(const char **matrix);
@@ -72,6 +74,7 @@ int			is_valid_envp(const char *str, int n);
 t_cmd		*parse_pipe_cmd(char const *str, int *shift, int *i, t_mshell *ms);
 int			exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell);
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);
+char		*expand_cmd(char *name, char *path);
 
 //signals
 void		signal_handler(int signo);
@@ -79,18 +82,18 @@ void		new_prompt_signal(void);
 
 //parsing
 t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell);
+char		**cmd_split(char const *s);
 char		**arg_split(char const *s, t_mshell *mshell);
 char		**redir_split(char const *s, t_mshell *mshell);
-int			arg_quotes(char **arg, char const *str, int len, t_mshell *mshell);
+char		*arg_quotes(char const *str, int len, t_mshell *mshell);
 //parsing utils
 char		*ft_append(char *s1, char const *s2, int n);
 int			nextquote(char const *s);
 int			smartcount(char const *s, char const *sep, int trim_sep);
+int 		ft_perror(int count, ...);
 
 //freeing
 void		free_cmdtab(t_cmdtab *cmd_tab);
-
-char		*expand_cmd(char *name, char *path);
 
 //redirections
 int			call_redirections(t_cmd *cmd, t_mshell *mshell);

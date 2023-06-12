@@ -20,7 +20,7 @@ int	ms_exit(int argc, char const *argv[], t_mshell *mshell)
 
 	ret = 0;
 	if (argc > 2)
-		return (printf("exit: too many arguments\n"), 1);
+		return (ft_perror(1, "exit: too many arguments"), 1);
 	else if (argc == 2)
 		ret = ft_atoi(argv[1]);
 	(void)*mshell;

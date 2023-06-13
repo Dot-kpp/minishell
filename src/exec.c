@@ -58,6 +58,8 @@ static int	exec_child(t_cmd cmd, t_mshell *mshell)
 	int		exit_status;
 
 	call_redirections(&cmd, mshell);
+	if (!cmd.argv[0])
+		return (0);
 	exit_status = call_builtin(cmd.argc, (MATRIX)cmd.argv, mshell);
 	if (exit_status > -1)
 		return (exit_status);
@@ -74,7 +76,7 @@ int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 	int		exit_status;
 	pid_t	pid;
 
-	if (is_funnofork(cmd))
+	if (cmd.argv[0] && is_funnofork(cmd))
 	{
 		exit_status = call_builtin(cmd.argc, (MATRIX)cmd.argv, mshell);
 		if (exit_status > -1)

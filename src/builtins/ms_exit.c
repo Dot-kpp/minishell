@@ -24,5 +24,6 @@ int	ms_exit(int argc, char const *argv[], t_mshell *mshell)
 	else if (argc == 2)
 		ret = ft_atoi(argv[1]);
 	(void)*mshell;
+	printf("exit\n");
 	exit(ret);
 }

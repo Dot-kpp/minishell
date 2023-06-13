@@ -6,16 +6,16 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/20 13:08:47 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/06/13 13:56:47 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/06/13 15:13:27 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-int ft_isspacesonly(char *str)
+static int	ft_isspacesonly(char *str)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (str[++i])
@@ -26,41 +26,47 @@ int ft_isspacesonly(char *str)
 	return (1);
 }
 
+static int	exec_prompt(char *prompt, t_mshell *mshell)
+{
+	t_cmdtab	*cmdtab;
+
+	cmdtab = tokenize(prompt, mshell);
+	if (!cmdtab)
+	{
+		mshell->exit_status = 1;
+		return (0);
+	}
+	mshell->exit_status = exec_pipeline(cmdtab, mshell);
+	free_cmdtab(cmdtab);
+	return (1);
+}
+
 //start running minishell overlay
 static void	minishell(t_mshell *mshell)
 {
-	t_cmdtab	*cmd_tab;
 	char		*prompt;
 	char		waiting_prompt[PATH_MAX];
 
 	while (1)
 	{
-		// cwd_check(ft_getenv("PWD", (const char **)mshell->env));
 		getcwd(waiting_prompt, PATH_MAX);
 		if (!mshell->exit_status)
-			ft_strlcat(waiting_prompt, "\001\033[1;96m\002 % \033[0;39m\001", PATH_MAX);
+			ft_strlcat(waiting_prompt,
+				"\001\033[1;96m\002 % \033[0;39m\001", PATH_MAX);
 		else
-			ft_strlcat(waiting_prompt, "\001\033[1;91m\002 % \033[0;39m\001", PATH_MAX);
+			ft_strlcat(waiting_prompt,
+				"\001\033[1;91m\002 % \033[0;39m\001", PATH_MAX);
 		new_prompt_signal();
 		prompt = readline((const char *)waiting_prompt);
-		if (prompt == NULL) // If input is NULL, user has pressed Ctrl-D or EOF has been reached
+		if (prompt == NULL)
 			return ;
-		if (ft_strlen(prompt) == 0 || ft_isspacesonly(prompt))// If input is empty, continue to next loop iteration
+		if (ft_strlen(prompt) == 0 || ft_isspacesonly(prompt))
 		{
 			free(prompt);
 			continue ;
 		}
-		add_history(prompt); // Add input to history
-		cmd_tab = tokenize(prompt, mshell); //PARSING
-		if (!cmd_tab)
-		{
-		// free_cmdtab(cmd_tab);
-			free(prompt);
-			mshell->exit_status = -1;
-			continue;
-		}
-		mshell->exit_status = exec_pipeline(cmd_tab, mshell);
-		free_cmdtab(cmd_tab);
+		if (exec_prompt(prompt, mshell))
+			add_history(prompt);
 		free(prompt);
 	}
 }
@@ -73,7 +79,6 @@ int	main(int ac, char const **av, char const **envp)
 	(void)av;
 	init_env(envp, &mshell);
 	minishell(&mshell);
-	// exit_all();
 	clear_history();
 	free_matrix(mshell.env);
 	return (0);

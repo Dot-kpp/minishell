@@ -32,27 +32,42 @@ static int	init_tokenize(char const *prompt, t_cmdtab **tct, char ***cl)
 	return (0);
 }
 
-t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
+static int	tokenize2(t_mshell *mshell, t_cmdtab *cmdtab, char **cmdlines)
 {
-	t_cmdtab	*cmdtab;
-	char		**cmdlines;
-	int			i;
+	int	i;
 
-	if (init_tokenize(prompt, &cmdtab, &cmdlines))
-		return (NULL);
 	i = -1;
 	while (cmdlines[++i])
 	{
 		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], mshell);
 		if (!cmdtab->cmdv[i].argv)
-			return (free_cmdtab(cmdtab), NULL);
+			return (-1);
 		cmdtab->cmdv[i].argc = get_matrixlen((MATRIX)cmdtab->cmdv[i].argv);
 		if (cmdtab->cmdv[i].argc == 0)
-			return (ft_perror(1, "parse error near '|'"), NULL);
+			return (ft_perror(1, "parse error near '|'"), -1);
 		cmdtab->cmdv[i].redirs = redir_split(cmdlines[i], mshell);
 		if (!cmdtab->cmdv[i].redirs)
-			return (free_cmdtab(cmdtab), NULL);
+			return (-1);
 		cmdtab->cmdv[i].redirc = get_matrixlen((MATRIX)cmdtab->cmdv[i].redirs);
+	}
+	return (0);
+}
+
+t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
+{
+	t_cmdtab	*cmdtab;
+	char		**cmdlines;
+
+	if (init_tokenize(prompt, &cmdtab, &cmdlines))
+	{
+		free_matrix(cmdlines);
+		free_cmdtab(cmdtab);
+		return (NULL);
+	}
+	if (tokenize2(mshell, cmdtab, cmdlines))
+	{
+		free_cmdtab(cmdtab);
+		cmdtab = NULL;
 	}
 	free_matrix(cmdlines);
 	return (cmdtab);

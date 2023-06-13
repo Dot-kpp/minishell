@@ -11,34 +11,30 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-// #include "../lib/readline/readline.h"
-# include <sys/ioctl.h>
+#include <sys/ioctl.h>
 
-// //signal handler 
-
-void signal_handler(int signo)
+void	signal_handler(int signo)
 {
-	// // Handle signals here
 	if (signo == SIGINT)
 	{
-		// printf("SIG!\n");
 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
 		rl_replace_line("", 0);
 		rl_on_new_line();
+		//set retstatus to 130
 	}
 }
 
-void new_prompt_signal(void)
+void	new_prompt_signal(void)
 {
-    struct sigaction sa;
+	struct sigaction	sa;
 
-    sa.sa_handler = signal_handler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGINT, &sa, NULL) == -1)
-    {
-        perror("sigaction() error");
-        return;
-    }
-    signal(SIGQUIT, SIG_IGN);
+	sa.sa_handler = signal_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	if (sigaction(SIGINT, &sa, NULL) == -1)
+	{
+		perror("sigaction() error");
+		return ;
+	}
+	signal(SIGQUIT, SIG_IGN);
 }

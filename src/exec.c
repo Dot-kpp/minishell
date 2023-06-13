@@ -13,7 +13,7 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-char	*expand_cmd(char *name, char *path)
+static char	*expand_cmd(char *name, char *path)
 {
 	char	**paths;
 	char	*temp_path;
@@ -40,7 +40,7 @@ char	*expand_cmd(char *name, char *path)
 	return (free_matrix(paths), NULL);
 }
 
-int	is_funnofork(t_cmd cmd)
+static int	is_funnofork(t_cmd cmd)
 {
 	if (!ft_strncmp(cmd.argv[0], "cd", 3))
 		return (1);
@@ -53,39 +53,41 @@ int	is_funnofork(t_cmd cmd)
 	return (0);
 }
 
+static int	exec_child(t_cmd cmd, t_mshell *mshell)
+{
+	int		exit_status;
+
+	call_redirections(&cmd, mshell);
+	exit_status = call_builtin(cmd.argc, (MATRIX)cmd.argv, mshell);
+	if (exit_status > -1)
+		return (exit_status);
+	exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
+					(MATRIX)mshell->env)), cmd.argv, mshell->env);
+	if (exit_status > -1)
+		return (exit_status);
+	ft_perror(2, "command not found:", cmd.argv[0]);
+	return (127);
+}
+
 int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 {
-    int		exit_status;
-    pid_t	pid;
+	int		exit_status;
+	pid_t	pid;
 
-    if (is_funnofork(cmd))
+	if (is_funnofork(cmd))
 	{
-		exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-        if (exit_status > -1)
-            return exit_status;
-    }
-    pid = fork();
-    if (pid == -1)
-	{
-        perror("fork");
-        exit(EXIT_FAILURE);
-    }
-    if (pid == 0)
-	{
-		call_redirections(&cmd, mshell);
-		exit_status = call_builtin(cmd.argc, (const char **)cmd.argv, mshell);
-        if (exit_status > -1)
-            exit (exit_status);
-        exit_status = execve(expand_cmd(cmd.argv[0],
-				ms_getenv("PATH", (const char **)mshell->env)), cmd.argv, mshell->env);
-        if (exit_status > -1)
-            exit(exit_status);
-		ft_perror(1, "command not found", cmd.argv[0]);
-        exit(127);
-    }
+		exit_status = call_builtin(cmd.argc, (MATRIX)cmd.argv, mshell);
+		if (exit_status > -1)
+			return (exit_status);
+	}
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), EXIT_FAILURE);
+	if (pid == 0)
+		exit (exec_child(cmd, mshell));
 	else
 	{
-        waitpid(pid, &exit_status, 0);
-        return WEXITSTATUS(exit_status);
-    }
+		waitpid(pid, &exit_status, 0);
+		return (WEXITSTATUS(exit_status));
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: fgeslin <fgeslin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/20 13:08:47 by fgeslin           #+#    #+#             */
-/*   Updated: 2023/06/12 14:07:02 by fgeslin          ###   ########.fr       */
+/*   Updated: 2023/06/13 13:56:47 by fgeslin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ static void	minishell(t_mshell *mshell)
 
 	while (1)
 	{
-		int	i;
-
 		// cwd_check(ft_getenv("PWD", (const char **)mshell->env));
 		getcwd(waiting_prompt, PATH_MAX);
 		if (!mshell->exit_status)
@@ -61,18 +59,7 @@ static void	minishell(t_mshell *mshell)
 			mshell->exit_status = -1;
 			continue;
 		}
-		i = -1;
-		while (++i < cmd_tab->cmdc) // EXEC
-		{
-			if(cmd_tab->cmdc > 1)
-			{
-				exec_pipeline(cmd_tab, mshell);
-				break;
-			}
-			else
-				mshell->exit_status = exec_cmd(cmd_tab->cmdv[i], mshell);
-		}
-		// continue;
+		mshell->exit_status = exec_pipeline(cmd_tab, mshell);
 		free_cmdtab(cmd_tab);
 		free(prompt);
 	}

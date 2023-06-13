@@ -74,7 +74,7 @@ int			is_valid_envp(const char *str, int n);
 t_cmd		*parse_pipe_cmd(char const *str, int *shift, int *i, t_mshell *ms);
 int			exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell);
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);
-char		*expand_cmd(char *name, char *path);
+// char		*expand_cmd(char *name, char *path);
 
 //signals
 void		signal_handler(int signo);

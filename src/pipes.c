@@ -13,122 +13,82 @@
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
 
-int count_args(char **args) {
-    int count = 0;
-    while (*args != NULL) {
-        count++;
-        args++;
-    }
-    return count;
+#define IN 0
+#define OUT 1
+
+static void	init_var(int *exit_status, int *ppipefd1, int *ppipefd2, int *i)
+{
+	*exit_status = 0;
+	*ppipefd1 = -1;
+	*ppipefd2 = -1;
+	*i = -1;
 }
 
-int exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell) {
-    (void) mshell;
-    int num_cmds = cmd_tab->cmdc;
-    int exit_status = 0;
-    int pipefd[2];
-    pid_t pid;
-    int i = 0;
-    int prev_pipefd[2] = {-1, -1};
-
-    while (i < num_cmds) {
-        if (i < num_cmds - 1) {
-            if (pipe(pipefd) == -1) {
-                perror("pipe");
-                exit(exit_status);
-            }
-        }
-        pid = fork();
-        if (pid == -1) {
-            perror("fork");
-            exit(exit_status);
-        } else if (pid == 0) {
-            // Child process
-            if (i > 0) {
-                // Redirect input from previous command
-                dup2(prev_pipefd[0], STDIN_FILENO);
-                close(prev_pipefd[0]);
-                close(prev_pipefd[1]);
-            }
-            if (i < num_cmds - 1) {
-                // Redirect output to next command
-                dup2(pipefd[1], STDOUT_FILENO);
-                close(pipefd[0]);
-                close(pipefd[1]);
-            }
-            // Execute command
-            // execvp(cmd_tab->cmdv[i].argv[0], cmd_tab->cmdv[i].argv);
-            exec_cmd(cmd_tab->cmdv[i], mshell);
-            // perror("execvp");
-            exit(EXIT_FAILURE);
-        } else {
-            // Parent process
-            if (prev_pipefd[0] != -1) {
-                close(prev_pipefd[0]);
-                close(prev_pipefd[1]);
-            }
-            if (i < num_cmds - 1) {
-                prev_pipefd[0] = pipefd[0];
-                prev_pipefd[1] = pipefd[1];
-            }
-            waitpid(pid, &exit_status, 0);
-        }
-        i++;
-    }
-
-    return exit_status;
+static int	init_pipes(int i, int pipefd[2], t_cmdtab *cmdtab)
+{
+	if (i < cmdtab->cmdc - 1)
+	{
+		if (pipe(pipefd) == -1)
+			return (perror("pipe"), EXIT_FAILURE);
+	}
+	return (0);
 }
 
-// int exec_pipeline(int *argc, char **argv, t_mshell *mshell) {
-//     int num_cmds = *argc;
-//     int exit_status = 0;
-//     int pipefd[2];
-//     pid_t pid;
-//     int i = 0;
+static void	dup_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
+{
+	if (i > 0)
+	{
+		dup2(ppipefd[0], STDIN_FILENO);
+		close(ppipefd[0]);
+		close(ppipefd[1]);
+	}
+	if (i < cmdtab->cmdc - 1)
+	{
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[0]);
+		close(pipefd[1]);
+	}
+}
 
-//     while (i < num_cmds) {
-//         if (i < num_cmds - 1) {
-//             if (pipe(pipefd) == -1) {
-//                 perror("pipe");
-//                 exit(exit_status);
-//             }
-//         }
-//         pid = fork();
-//         if (pid == -1) {
-//             perror("fork");
-//             exit(exit_status);
-//         }
-//         if (pid == 0) {
-//             if (i > 0) {
-//                 if (dup2(pipefd[0], STDIN_FILENO) == -1) {
-//                     perror("dup2");
-//                     exit(exit_status);
-//                 }
-//                 close(pipefd[0]);
-//             }
-//             if (i < num_cmds - 1) {
-//                 if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
-//                     perror("dup2");
-//                     exit(exit_status);
-//                 }
-//                 close(pipefd[1]);
-//             }
-//             char **cmd_argv = argv + i;
-//             int cmd_argc = count_args(*&cmd_argv);
-//             t_cmd cmd = { .argc = cmd_argc, .argv = cmd_argv };
-//             // exit_status = exec_cmd(cmd, mshell);
-//             exit_status = execve(cmd.argv[0], cmd.argv, mshell->env);
-//             exit(exit_status);
-//         } else {
-//             if (i > 0) {
-//                 close(pipefd[0]);
-//             }
-//             if (i < num_cmds - 1) {
-//                 close(pipefd[1]);
-//             }
-//             waitpid(pid, &exit_status, 0);
-//         }
-//         i++;
-//     }
-//     return exit_status;
-// }
+static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
+{
+	if (ppipefd[0] != -1)
+	{
+		close(ppipefd[0]);
+		close(ppipefd[1]);
+	}
+	if (i < cmdtab->cmdc - 1)
+	{
+		ppipefd[0] = pipefd[0];
+		ppipefd[1] = pipefd[1];
+	}
+}
+
+int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
+{
+	int		exit_status;
+	pid_t	pid;
+	int		i;
+	int		pipesfd[2][2];
+
+	init_var(&exit_status, &pipesfd[IN][0], &pipesfd[IN][1], &i);
+	while (++i < cmdtab->cmdc)
+	{
+		if (init_pipes(i, pipesfd[0], cmdtab))
+			return (EXIT_FAILURE);
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		else if (pid == 0)
+		{
+			dup_pipes(i, pipesfd[IN], pipesfd[OUT], cmdtab);
+			exit(exec_cmd(cmdtab->cmdv[i], mshell));
+		}
+		close_pipes(i, pipesfd[IN], pipesfd[OUT], cmdtab);
+		waitpid(pid, &exit_status, 0);
+	}
+	return (WEXITSTATUS(exit_status));
+}

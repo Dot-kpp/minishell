@@ -43,12 +43,12 @@ static int	tokenize2(t_mshell *mshell, t_cmdtab *cmdtab, char **cmdlines)
 		if (!cmdtab->cmdv[i].argv)
 			return (-1);
 		cmdtab->cmdv[i].argc = get_matrixlen((MATRIX)cmdtab->cmdv[i].argv);
-		if (cmdtab->cmdv[i].argc == 0 && cmdtab->cmdc > 1)
-			return (ft_perror(1, "parse error near '|'"), -1);
 		cmdtab->cmdv[i].redirs = redir_split(cmdlines[i], mshell);
 		if (!cmdtab->cmdv[i].redirs)
 			return (-1);
 		cmdtab->cmdv[i].redirc = get_matrixlen((MATRIX)cmdtab->cmdv[i].redirs);
+		if (cmdtab->cmdv[i].argc == 0 && cmdtab->cmdv[i].redirc == 0)
+			return (ft_perror(1, "parse error near '|'"), -1);
 	}
 	return (0);
 }

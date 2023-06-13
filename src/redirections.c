@@ -74,7 +74,6 @@ void handle_output_redirection(char **argv, int *argc, char **output_file, char 
 
 void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
     int i = 0;
-    char *temp_file = NULL;
     while (i < *argc) {
         if (ft_strcmp(argv[i], "<<") == 0) {
             if (i + 1 >= *argc) {
@@ -89,13 +88,10 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
             i--;
             char *line = NULL;
             while ((line = get_next_line(STDIN_FILENO))) {
-                temp_file = ft_strjoin(temp_file, line);
                 if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) != 0) 
                     write(STDOUT_FILENO, "heredoc>", 9);
                 else if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) == 0) {
                     free(line);
-                    // exit(1);
-                    write(STDOUT_FILENO, temp_file, ft_strlen(temp_file));
                     break;
                 }
                 free(line);
@@ -118,7 +114,6 @@ int call_redirections(t_cmd *cmd, t_mshell *mshell)
     handle_input_redirection(cmd->redirs, &cmd->redirc, &input_file);
     handle_output_redirection(cmd->redirs, &cmd->redirc, &output_file, &append_file);
     handle_heredoc_redirection(cmd->redirs, &cmd->redirc, &delimiter);
-
     if (input_file != NULL) {
         input_fd = open(input_file, O_RDONLY);
         if (input_fd == -1) {

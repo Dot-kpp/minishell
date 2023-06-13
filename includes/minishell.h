@@ -97,5 +97,6 @@ void		free_cmdtab(t_cmdtab *cmd_tab);
 
 //redirections
 int			call_redirections(t_cmd *cmd, t_mshell *mshell);
+void 		handle_heredoc_redirection(char **argv, int *argc, char **delimiter);
 
 #endif

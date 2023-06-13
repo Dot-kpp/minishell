@@ -24,16 +24,6 @@ static void	init_var(int *exit_status, int *ppipefd1, int *ppipefd2, int *i)
 	*i = -1;
 }
 
-static int	init_pipes(int i, int pipefd[2], t_cmdtab *cmdtab)
-{
-	if (i < cmdtab->cmdc - 1)
-	{
-		if (pipe(pipefd) == -1)
-			return (perror("pipe"), EXIT_FAILURE);
-	}
-	return (0);
-}
-
 static void	dup_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 {
 	if (i > 0)
@@ -72,10 +62,10 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	int		pipesfd[2][2];
 
 	init_var(&exit_status, &pipesfd[IN][0], &pipesfd[IN][1], &i);
-	while (++i < cmdtab->cmdc)
+	while (++i < cmdtab->cmdc - 1)
 	{
-		if (init_pipes(i, pipesfd[0], cmdtab))
-			return (EXIT_FAILURE);
+		if (pipe(pipesfd[IN]) == -1)
+			return (perror("pipe"), EXIT_FAILURE);
 		pid = fork();
 		if (pid == -1)
 		{
@@ -90,5 +80,5 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 		close_pipes(i, pipesfd[IN], pipesfd[OUT], cmdtab);
 		waitpid(pid, &exit_status, 0);
 	}
-	return (WEXITSTATUS(exit_status));
+	return (exec_cmd(cmdtab->cmdv[i], mshell));
 }

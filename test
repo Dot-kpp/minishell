@@ -4,4 +4,4 @@ includes
 lib
 minishell
 src
-test.txt
+test

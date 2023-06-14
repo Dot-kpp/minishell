@@ -25,6 +25,7 @@ SRCS = 	./src/main.c \
 		./src/matrix.c \
 		./src/matrix_print.c \
 		./src/redirections.c \
+		./src/redirections_2.c \
 		./src/env_utils.c \
 		./src/builtins/ms_cd.c \
 		./src/builtins/ms_echo.c \

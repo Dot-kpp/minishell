@@ -95,7 +95,11 @@ int			ft_perror(int count, ...);
 void		free_cmdtab(t_cmdtab *cmd_tab);
 
 //redirections
-int	call_redirections(t_cmd *cmd);
-// void		handle_heredoc_redirection(char **argv, int *argc, char **del);
+int			call_redirections(t_cmd *cmd);
+int			open_output_file(char *filename, int flags, mode_t mode);
+void	handle_input_redirection(char **argv, int *argc, char **input_file);
+void handle_output_file(char **argv, int *argc, char **file, int index, char *error_message);
+void handle_single_output_redirection(char **argv, int *argc, char **file, char *operator);
+void handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file);
 
 #endif

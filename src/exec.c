@@ -57,7 +57,7 @@ static int	exec_child(t_cmd cmd, t_mshell *mshell)
 {
 	int		exit_status;
 
-	call_redirections(&cmd, mshell);
+	call_redirections(&cmd);
 	if (!cmd.argv[0])
 		return (0);
 	exit_status = call_builtin(cmd.argc, (MATRIX)cmd.argv, mshell);

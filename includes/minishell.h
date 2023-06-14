@@ -95,7 +95,7 @@ int			ft_perror(int count, ...);
 void		free_cmdtab(t_cmdtab *cmd_tab);
 
 //redirections
-int			call_redirections(t_cmd *cmd, t_mshell *mshell);
+int	call_redirections(t_cmd *cmd);
 // void		handle_heredoc_redirection(char **argv, int *argc, char **del);
 
 #endif

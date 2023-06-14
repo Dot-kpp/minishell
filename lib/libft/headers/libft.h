@@ -6,7 +6,7 @@
 /*   By: jpilotte <jpilotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 21:38:45 by jpilotte          #+#    #+#             */
-/*   Updated: 2022/10/15 14:07:40 by jpilotte         ###   ########.fr       */
+/*   Updated: 2023/06/14 12:49:39 by jpilotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,6 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
-int ft_strcmp(const char *str1, const char *str2);
+int		ft_strcmp(const char *str1, const char *str2);
 
 #endif

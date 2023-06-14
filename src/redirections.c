@@ -6,7 +6,7 @@
 /*   By: jpilotte <jpilotte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 14:36:11 by jpilotte          #+#    #+#             */
-/*   Updated: 2023/06/14 14:08:12 by jpilotte         ###   ########.fr       */
+/*   Updated: 2023/06/14 15:58:18 by jpilotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 	{
 		if (ft_strcmp(argv[i], "<<") == 0)
 		{
-	        tmpfd = open(TMPFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			tmpfd = open(TMPFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (i + 1 >= *argc)
 			{
 				write(STDERR_FILENO, error_message, ft_strlen(error_message));
@@ -41,8 +41,8 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 				(*argc - i - 1) * sizeof(char *));
 			*argc -= 2;
 			i--;
-			// line = get_next_line(STDIN_FILENO);
-			while ((line = get_next_line(STDIN_FILENO)))
+			line = get_next_line(STDIN_FILENO);
+			while (line != NULL)
 			{
 				if (ft_strncmp(line, *delimiter, ft_strlen(*delimiter)) != 0)
 					write(STDOUT_FILENO, "heredoc>", 9);
@@ -54,9 +54,10 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 				}
 				write(tmpfd, line, ft_strlen(line));
 				free(line);
+				line = get_next_line(STDIN_FILENO);
 			}
-            *input_file = TMPFILE;
-            close(tmpfd);
+			*input_file = TMPFILE;
+			close (tmpfd);
 		}
 		i++;
 	}
@@ -94,14 +95,14 @@ int	call_redirections(t_cmd *cmd)
 		output_fd = open_output_file(append_file,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (output_fd == -1)
-            return (perror("open"), -1);
+			return (perror("open"), -1);
 	}
 	if (output_file != NULL)
 	{
 		output_fd = open_output_file(output_file,
 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (output_fd == -1)
-	    	return (perror("open"), -1);
+			return (perror("open"), -1);
 	}
 	if (dup2(input_fd, STDIN_FILENO) == -1)
 		return (perror("dup2"), -1);

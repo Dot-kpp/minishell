@@ -16,14 +16,14 @@
 void	free_cmdtab(t_cmdtab *cmd_tab)
 {
 	int	cmd_i;
-	int	arg_i;
+	// int	arg_i;
 
 	if (cmd_tab == NULL)
 		return ;
 	cmd_i = -1;
 	while (++cmd_i < cmd_tab->cmdc)
 	{
-		arg_i = -1;
+		// arg_i = -1;
 		if (cmd_tab->cmdv[cmd_i].argv != NULL)
 			free_matrix(cmd_tab->cmdv[cmd_i].argv);
 		if (cmd_tab->cmdv[cmd_i].redirs != NULL)

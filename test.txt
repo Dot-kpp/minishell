@@ -1,0 +1,7 @@
+Makefile
+README.md
+includes
+lib
+minishell
+src
+test.txt

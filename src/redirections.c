@@ -11,10 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include "../includes/ms_builtins.h"
 #include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -72,8 +69,9 @@ void handle_output_redirection(char **argv, int *argc, char **output_file, char 
     }
 }
 
-void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
+void handle_heredoc_redirection(char **argv, int *argc, char **delimiter, char **input_file) {
     int i = 0;
+    int tmpfd = open(TMPFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     while (i < *argc) {
         if (ft_strcmp(argv[i], "<<") == 0) {
             if (i + 1 >= *argc) {
@@ -94,11 +92,14 @@ void handle_heredoc_redirection(char **argv, int *argc, char **delimiter) {
                     free(line);
                     break;
                 }
+                write(tmpfd, line, ft_strlen(line));
                 free(line);
             }
         }
         i++;
     }
+    *input_file = TMPFILE;
+    close(tmpfd);
 }
 
 int call_redirections(t_cmd *cmd, t_mshell *mshell)
@@ -113,7 +114,7 @@ int call_redirections(t_cmd *cmd, t_mshell *mshell)
 
     handle_input_redirection(cmd->redirs, &cmd->redirc, &input_file);
     handle_output_redirection(cmd->redirs, &cmd->redirc, &output_file, &append_file);
-    handle_heredoc_redirection(cmd->redirs, &cmd->redirc, &delimiter);
+    handle_heredoc_redirection(cmd->redirs, &cmd->redirc, &delimiter, &input_file);
     if (input_file != NULL) {
         input_fd = open(input_file, O_RDONLY);
         if (input_fd == -1) {

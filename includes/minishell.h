@@ -23,6 +23,7 @@
 # include <limits.h>
 
 # define MATRIX const char **
+# define TMPFILE "/tmp/heredoc"
 
 # define MAX_PATH_LENGTH 1024
 # define MAX_ARGS 128
@@ -71,10 +72,8 @@ int			update_envp(const char *str, t_mshell *mshell);
 int			is_valid_envp(const char *str, int n);
 
 //pipes
-t_cmd		*parse_pipe_cmd(char const *str, int *shift, int *i, t_mshell *ms);
 int			exec_pipeline(t_cmdtab *cmd_tab, t_mshell *mshell);
 int			exec_cmd(t_cmd cmd, t_mshell *mshell);
-// char		*expand_cmd(char *name, char *path);
 
 //signals
 void		signal_handler(int signo);
@@ -90,13 +89,13 @@ char		*arg_quotes(char const *str, int len, t_mshell *mshell);
 char		*ft_append(char *s1, char const *s2, int n);
 int			nextquote(char const *s);
 int			smartcount(char const *s, char const *sep, int trim_sep);
-int 		ft_perror(int count, ...);
+int			ft_perror(int count, ...);
 
 //freeing
 void		free_cmdtab(t_cmdtab *cmd_tab);
 
 //redirections
 int			call_redirections(t_cmd *cmd, t_mshell *mshell);
-void 		handle_heredoc_redirection(char **argv, int *argc, char **delimiter);
+// void		handle_heredoc_redirection(char **argv, int *argc, char **del);
 
 #endif

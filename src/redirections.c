@@ -21,9 +21,7 @@ int	open_output_file(char *filename, int flags, mode_t mode)
 
 	fd = open(filename, flags, mode);
 	if (fd == -1)
-	{
 		perror("open");
-	}
 	return (fd);
 }
 
@@ -103,11 +101,11 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 
 	i = 0;
 	error_message = "Error: no delimiter specified\n";
-	tmpfd = open(TMPFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	while (i < *argc)
 	{
 		if (ft_strcmp(argv[i], "<<") == 0)
 		{
+	        tmpfd = open(TMPFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (i + 1 >= *argc)
 			{
 				write(STDERR_FILENO, error_message, ft_strlen(error_message));
@@ -133,11 +131,11 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 				write(tmpfd, line, ft_strlen(line));
 				free(line);
 			}
+            *input_file = TMPFILE;
+            close(tmpfd);
 		}
 		i++;
 	}
-	*input_file = TMPFILE;
-	close(tmpfd);
 }
 
 int	call_redirections(t_cmd *cmd)
@@ -165,48 +163,29 @@ int	call_redirections(t_cmd *cmd)
 	{
 		input_fd = open(input_file, O_RDONLY);
 		if (input_fd == -1)
-		{
-			perror("open");
-			exit (-1);
-		}
+			return (perror("open"), -1);
 	}
-	else if (append_file != NULL)
+	if (append_file != NULL)
 	{
 		output_fd = open_output_file(append_file,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (output_fd == -1)
-		{
-			perror("open");
-			return (-1);
-		}
+            return (perror("open"), -1);
 	}
-	else if (output_file != NULL)
+	if (output_file != NULL)
 	{
 		output_fd = open_output_file(output_file,
 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (output_fd == -1)
-		{
-			perror("open");
-			return (-1);
-		}
+	    	return (perror("open"), -1);
 	}
 	if (dup2(input_fd, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		return (-1);
-	}
+		return (perror("dup2"), -1);
 	if (dup2(output_fd, STDOUT_FILENO) == -1)
-	{
-		perror("dup2");
-		return (-1);
-	}
+		return (perror("dup2"), -1);
 	if (input_file != NULL)
-	{
 		close(input_fd);
-	}
 	if (output_file != NULL || append_file != NULL)
-	{
 		close(output_fd);
-	}
 	return (-1);
 }

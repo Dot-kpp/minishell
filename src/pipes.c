@@ -16,14 +16,17 @@
 #define IN 0
 #define OUT 1
 
-static void	init_var(int *exit_status, int *ppipefd1, int *ppipefd2, int *i)
+static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
 {
 	*exit_status = 0;
-	*ppipefd1 = -1;
-	*ppipefd2 = -1;
+	pipesfd[0][0] = 0;
+	pipesfd[0][1] = 1;
+	pipesfd[1][0] = -1;
+	pipesfd[1][1] = -1;
 	*i = -1;
 }
 
+//child
 static void	dup_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 {
 	if (i > 0)
@@ -40,9 +43,11 @@ static void	dup_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 	}
 }
 
+//main
 static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 {
-	if (ppipefd[0] != -1)
+	// if (ppipefd[0] != -1)
+	if (i > 0)
 	{
 		close(ppipefd[0]);
 		close(ppipefd[1]);
@@ -61,10 +66,10 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	int		i;
 	int		pipesfd[2][2];
 
-	init_var(&exit_status, &pipesfd[IN][0], &pipesfd[IN][1], &i);
-	while (++i < cmdtab->cmdc - 1)
+	init_var(&exit_status, pipesfd, &i);
+	while (++i < cmdtab->cmdc)
 	{
-		if (pipe(pipesfd[IN]) == -1)
+		if (pipe(pipesfd[0]) == -1)
 			return (perror("pipe"), EXIT_FAILURE);
 		pid = fork();
 		if (pid == -1)
@@ -74,11 +79,11 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 		}
 		else if (pid == 0)
 		{
-			dup_pipes(i, pipesfd[IN], pipesfd[OUT], cmdtab);
+			dup_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 			exit(exec_cmd(cmdtab->cmdv[i], mshell));
 		}
-		close_pipes(i, pipesfd[IN], pipesfd[OUT], cmdtab);
+		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 		waitpid(pid, &exit_status, 0);
 	}
-	return (exec_cmd(cmdtab->cmdv[i], mshell));
+	return (WEXITSTATUS(exit_status));
 }

@@ -39,6 +39,7 @@ typedef struct s_cmd
 	char	**argv;
 	int		redirc;
 	char	**redirs;
+	int		pipe[2];
 }	t_cmd;
 
 typedef struct s_cmdtab

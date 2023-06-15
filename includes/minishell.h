@@ -21,6 +21,9 @@
 # include <sys/wait.h>
 # include <signal.h>
 # include <limits.h>
+# include <fcntl.h>
+# include <stdlib.h>
+# include <string.h>
 
 # define MATRIX const char **
 # define TMPFILE "/tmp/heredoc"
@@ -49,6 +52,16 @@ typedef struct s_mshell
 	unsigned char	exit_status;
 	char			**env;
 }	t_mshell;
+
+typedef struct	s_redirections
+{
+    int		input_fd;
+    int		output_fd;
+    char	*input_file;
+    char	*output_file;
+    char	*append_file;
+    char	*delimiter;
+}				t_redirections;
 
 //Unit tests, remove before pushing project for grading
 char		**ms_parse_input(char *input);
@@ -97,9 +110,10 @@ void		free_cmdtab(t_cmdtab *cmd_tab);
 //redirections
 int			call_redirections(t_cmd *cmd);
 int			open_output_file(char *filename, int flags, mode_t mode);
-void	handle_input_redirection(char **argv, int *argc, char **input_file);
-void handle_output_file(char **argv, int *argc, char **file, int index);
-void handle_single_output_redirection(char **argv, int *argc, char **file, char *operator);
-void handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file);
+void		handle_input_redirection(char **argv, int *argc, char **input_file);
+void 		handle_output_file(char **argv, int *argc, char **file, int index);
+void 		handle_single_output_redirection(char **argv, int *argc, char **file, char *operator);
+void 		handle_output_redirection(char **argv, int *argc, char **output_file, char **append_file);
+void 		redir_error(void);
 
 #endif

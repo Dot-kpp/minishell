@@ -14,21 +14,16 @@
 
 static int	init_tokenize(char const *prompt, t_cmdtab **tct, char ***cl)
 {
-	t_cmdtab	*cmdtab;
-	char		**cmdlines;
-
-	cmdtab = ft_calloc(1, sizeof(t_cmdtab));
-	if (!cmdtab)
+	*tct = ft_calloc(1, sizeof(t_cmdtab));
+	if (!*tct)
 		return (perror("mshell"), 1);
-	cmdlines = cmd_split(prompt);
-	if (!cmdlines)
+	*cl = cmd_split(prompt);
+	if (!*cl)
+		return (1);
+	(*tct)->cmdc = get_matrixlen((MATRIX) * cl);
+	(*tct)->cmdv = ft_calloc((*tct)->cmdc, sizeof(t_cmd));
+	if (!(*tct)->cmdv)
 		return (perror("mshell"), 1);
-	cmdtab->cmdc = get_matrixlen((MATRIX)cmdlines);
-	cmdtab->cmdv = ft_calloc(cmdtab->cmdc, sizeof(t_cmd));
-	if (!cmdtab->cmdv)
-		return (perror("mshell"), 1);
-	*tct = cmdtab;
-	*cl = cmdlines;
 	return (0);
 }
 
@@ -60,7 +55,8 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 
 	if (init_tokenize(prompt, &cmdtab, &cmdlines))
 	{
-		free_matrix(cmdlines);
+		if (cmdlines)
+			free_matrix(cmdlines);
 		free_cmdtab(cmdtab);
 		return (NULL);
 	}

@@ -24,7 +24,7 @@ int	nextquote(char const *s)
 			if (s[i] == *s)
 				return (i);
 		}
-		return (perror("QUOTE_ERR"), -1);
+		return (-1);
 	}
 	return (0);
 }

@@ -27,26 +27,27 @@ static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
 }
 
 //child
-static void	dup_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
+static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 {
 	if (i > 0)
 	{
-		dup2(ppipefd[0], STDIN_FILENO);
-		close(ppipefd[0]);
-		close(ppipefd[1]);
+		dup2(pfd[1][0], STDIN_FILENO);
+		close(pfd[1][0]);
+		close(pfd[1][1]);
 	}
 	if (i < cmdtab->cmdc - 1)
 	{
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[0]);
-		close(pipefd[1]);
+		dup2(pfd[0][1], STDOUT_FILENO);
+		close(pfd[0][0]);
+		close(pfd[0][1]);
 	}
+	call_redirections(&cmdtab->cmdv[i]);
+	exit(exec_cmd(cmdtab->cmdv[i], ms));
 }
 
 //main
 static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 {
-	// if (ppipefd[0] != -1)
 	if (i > 0)
 	{
 		close(ppipefd[0]);
@@ -59,17 +60,18 @@ static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 	}
 }
 
-static int	is_funnofork(t_cmd cmd)
+static int	try_builtin(t_cmdtab *cmdtab, t_mshell *mshell, int i)
 {
-	if (!ft_strncmp(cmd.argv[0], "cd", 3))
-		return (1);
-	if (!ft_strncmp(cmd.argv[0], "exit", 5))
-		return (1);
-	if (!ft_strncmp(cmd.argv[0], "unset", 6))
-		return (1);
-	if (!ft_strncmp(cmd.argv[0], "export", 7) && cmd.argc > 1)
-		return (1);
-	return (0);
+	int	exit_status;
+
+	exit_status = -1;
+	if (cmdtab->cmdv[i].argv[0] && is_funnofork(cmdtab->cmdv[i])
+		&& cmdtab->cmdc == 1)
+	{
+		exit_status = call_builtin(cmdtab->cmdv[i].argc,
+				(MATRIX)cmdtab->cmdv[i].argv, mshell);
+	}
+	return (exit_status);
 }
 
 int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
@@ -82,13 +84,9 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	init_var(&exit_status, pipesfd, &i);
 	while (++i < cmdtab->cmdc)
 	{
-		if (cmdtab->cmdv[i].argv[0] && is_funnofork(cmdtab->cmdv[i]) && cmdtab->cmdc == 1)
-		{
-			exit_status = call_builtin(cmdtab->cmdv[i].argc,
-					(MATRIX)cmdtab->cmdv[i].argv, mshell);
-			if (exit_status > -1)
-				return (exit_status);
-		}
+		exit_status = try_builtin(cmdtab, mshell, i);
+		if (exit_status > -1)
+			return (exit_status);
 		if (pipe(pipesfd[0]) == -1)
 			return (perror("pipe"), EXIT_FAILURE);
 		pid = fork();
@@ -98,11 +96,7 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 			exit(EXIT_FAILURE);
 		}
 		else if (pid == 0)
-		{
-			dup_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
-			call_redirections(&cmdtab->cmdv[i]);
-			exit(exec_cmd(cmdtab->cmdv[i], mshell));
-		}
+			exec_child(i, pipesfd, cmdtab, mshell);
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 		waitpid(pid, &exit_status, 0);
 	}

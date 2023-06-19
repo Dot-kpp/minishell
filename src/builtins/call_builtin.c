@@ -49,3 +49,16 @@ int	call_builtin(int argc, char const *argv[], t_mshell *mshell)
 	}
 	return (-1);
 }
+
+int	is_funnofork(t_cmd cmd)
+{
+	if (!ft_strncmp(cmd.argv[0], "cd", 3))
+		return (1);
+	if (!ft_strncmp(cmd.argv[0], "exit", 5))
+		return (1);
+	if (!ft_strncmp(cmd.argv[0], "unset", 6))
+		return (1);
+	if (!ft_strncmp(cmd.argv[0], "export", 7) && cmd.argc > 1)
+		return (1);
+	return (0);
+}

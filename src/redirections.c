@@ -68,7 +68,7 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 	}
 }
 
-void	init_redirections(t_redirections *redirs)
+static int	call_redirections2(t_redirections *redirs, t_cmd *cmd)
 {
 	redirs->input_fd = STDIN_FILENO;
 	redirs->output_fd = STDOUT_FILENO;
@@ -76,24 +76,42 @@ void	init_redirections(t_redirections *redirs)
 	redirs->output_file = NULL;
 	redirs->append_file = NULL;
 	redirs->delimiter = NULL;
+	handle_input_redirection(cmd->redirs, &cmd->redirc, &redirs->input_file);
+	handle_output_redirection(cmd->redirs, &cmd->redirc,
+		&redirs->output_file, &redirs->append_file);
+	handle_heredoc_redirection(cmd->redirs, &cmd->redirc,
+		&redirs->delimiter, &redirs->input_file);
+	if (redirs->input_file != NULL)
+	{
+		redirs->input_fd = open(redirs->input_file, O_RDONLY);
+		if (redirs->input_fd == -1)
+			return (perror("open"), -1);
+	}
+	if (redirs->append_file != NULL)
+	{
+		redirs->output_fd = open_output_file(redirs->append_file,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (redirs->output_fd == -1)
+			return (perror("open"), -1);
+	}
+	return (0);
 }
 
 int	call_redirections(t_cmd *cmd)
 {
 	t_redirections	redirs;
 
-	init_redirections(&redirs);
-	handle_input_redirection(cmd->redirs, &cmd->redirc, &redirs.input_file);
-	handle_output_redirection(cmd->redirs, &cmd->redirc,
-		&redirs.output_file, &redirs.append_file);
-	handle_heredoc_redirection(cmd->redirs, &cmd->redirc,
-		&redirs.delimiter, &redirs.input_file);
-	if (redirs.input_file != NULL && (redirs.input_fd = open(redirs.input_file, O_RDONLY)) == -1)
-		return (perror("open"), -1);
-	if ((redirs.append_file != NULL && (redirs.output_fd = open_output_file(redirs.append_file, O_WRONLY | O_CREAT | O_APPEND, 0644)) == -1) ||
-			(redirs.output_file != NULL && (redirs.output_fd = open_output_file(redirs.output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1))
-		return (perror("open"), -1);
-	if (dup2(redirs.input_fd, STDIN_FILENO) == -1 || dup2(redirs.output_fd, STDOUT_FILENO) == -1)
+	if (call_redirections2(&redirs, cmd) == -1)
+		return (-1);
+	if (redirs.output_file != NULL)
+	{
+		redirs.output_fd = open_output_file(redirs.output_file,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (redirs.output_fd == -1)
+			return (perror("open"), -1);
+	}
+	if (dup2(redirs.input_fd, STDIN_FILENO) == -1
+		|| dup2(redirs.output_fd, STDOUT_FILENO) == -1)
 		return (perror("dup2"), -1);
 	if (redirs.input_file != NULL)
 		close(redirs.input_fd);

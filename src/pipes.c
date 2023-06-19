@@ -59,6 +59,19 @@ static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 	}
 }
 
+static int	is_funnofork(t_cmd cmd)
+{
+	if (!ft_strncmp(cmd.argv[0], "cd", 3))
+		return (1);
+	if (!ft_strncmp(cmd.argv[0], "exit", 5))
+		return (1);
+	if (!ft_strncmp(cmd.argv[0], "unset", 6))
+		return (1);
+	if (!ft_strncmp(cmd.argv[0], "export", 7) && cmd.argc > 1)
+		return (1);
+	return (0);
+}
+
 int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 {
 	int		exit_status;
@@ -69,6 +82,13 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	init_var(&exit_status, pipesfd, &i);
 	while (++i < cmdtab->cmdc)
 	{
+		if (cmdtab->cmdv[i].argv[0] && is_funnofork(cmdtab->cmdv[i]) && cmdtab->cmdc == 1)
+		{
+			exit_status = call_builtin(cmdtab->cmdv[i].argc,
+					(MATRIX)cmdtab->cmdv[i].argv, mshell);
+			if (exit_status > -1)
+				return (exit_status);
+		}
 		if (pipe(pipesfd[0]) == -1)
 			return (perror("pipe"), EXIT_FAILURE);
 		pid = fork();
@@ -80,6 +100,7 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 		else if (pid == 0)
 		{
 			dup_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
+			call_redirections(&cmdtab->cmdv[i]);
 			exit(exec_cmd(cmdtab->cmdv[i], mshell));
 		}
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);

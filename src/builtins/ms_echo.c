@@ -35,6 +35,8 @@ int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 	(void)mshell;
 	i = 0;
 	newline = 1;
+	if (argc == 1)
+		printf("\n");
 	while (isflag(argv[++i]))
 		newline = 0;
 	while (i < argc)

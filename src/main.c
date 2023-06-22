@@ -51,11 +51,9 @@ static void	minishell(t_mshell *mshell)
 	{
 		getcwd(waiting_prompt, PATH_MAX);
 		if (!mshell->exit_status)
-			ft_strlcat(waiting_prompt,
-				"\001\033[1;96m\002 % \033[0;39m\001", PATH_MAX);
+			ft_strlcat(waiting_prompt, " % ", PATH_MAX);
 		else
-			ft_strlcat(waiting_prompt,
-				"\001\033[1;91m\002 % \033[0;39m\001", PATH_MAX);
+			ft_strlcat(waiting_prompt, " # ", PATH_MAX);
 		new_prompt_signal();
 		prompt = readline((const char *)waiting_prompt);
 		if (prompt == NULL)

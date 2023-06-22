@@ -62,3 +62,17 @@ int	is_funnofork(t_cmd cmd)
 		return (1);
 	return (0);
 }
+
+int	try_builtin(t_cmdtab *cmdtab, t_mshell *mshell, int i)
+{
+	int	exit_status;
+
+	exit_status = -1;
+	if (cmdtab->cmdv[i].argv[0] && is_funnofork(cmdtab->cmdv[i])
+		&& cmdtab->cmdc == 1)
+	{
+		exit_status = call_builtin(cmdtab->cmdv[i].argc,
+				(MATRIX)cmdtab->cmdv[i].argv, mshell);
+	}
+	return (exit_status);
+}

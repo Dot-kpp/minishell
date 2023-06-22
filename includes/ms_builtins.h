@@ -17,6 +17,7 @@
 
 int		call_builtin(int argc, char const *argv[], t_mshell *mshell);
 int		is_funnofork(t_cmd cmd);
+int		try_builtin(t_cmdtab *cmdtab, t_mshell *mshell, int i);
 
 int		ms_cd(int argc, char const *argv[], t_mshell *mshell);
 int		ms_echo(int argc, char const *argv[], t_mshell *mshell);

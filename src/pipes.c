@@ -12,6 +12,7 @@
 
 #include "../includes/minishell.h"
 #include "../includes/ms_builtins.h"
+#include <sys/ioctl.h>
 
 #define IN 0
 #define OUT 1
@@ -29,6 +30,8 @@ static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
 //child
 static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 {
+	signal(SIGQUIT, SIG_ERR);
+	signal(SIGINT, SIG_ERR);
 	if (i > 0)
 	{
 		dup2(pfd[1][0], STDIN_FILENO);
@@ -60,28 +63,29 @@ static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 	}
 }
 
-static int	try_builtin(t_cmdtab *cmdtab, t_mshell *mshell, int i)
+static int	waitall(int count, pid_t *pids)
 {
 	int	exit_status;
+	int	i;
 
-	exit_status = -1;
-	if (cmdtab->cmdv[i].argv[0] && is_funnofork(cmdtab->cmdv[i])
-		&& cmdtab->cmdc == 1)
-	{
-		exit_status = call_builtin(cmdtab->cmdv[i].argc,
-				(MATRIX)cmdtab->cmdv[i].argv, mshell);
-	}
-	return (exit_status);
+	i = -1;
+	while (++i < count)
+		waitpid(pids[i], &exit_status, 0);
+	return (WEXITSTATUS(exit_status));
 }
 
 int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 {
 	int		exit_status;
-	pid_t	pid;
+	pid_t	*pids;
 	int		i;
 	int		pipesfd[2][2];
 
+	signal(SIGINT, SIG_IGN);
 	init_var(&exit_status, pipesfd, &i);
+	pids = ft_calloc(cmdtab->cmdc + 1, sizeof(int));
+	if (pids == NULL)
+		return (perror("exec"), EXIT_FAILURE);
 	while (++i < cmdtab->cmdc)
 	{
 		exit_status = try_builtin(cmdtab, mshell, i);
@@ -89,16 +93,12 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 			return (exit_status);
 		if (pipe(pipesfd[0]) == -1)
 			return (perror("pipe"), EXIT_FAILURE);
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid == 0)
+		pids[i] = fork();
+		if (pids[i] == -1)
+			return (perror("fork"), EXIT_FAILURE);
+		else if (pids[i] == 0)
 			exec_child(i, pipesfd, cmdtab, mshell);
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
-		waitpid(pid, &exit_status, 0);
 	}
-	return (WEXITSTATUS(exit_status));
+	return (waitall(cmdtab->cmdc, pids));
 }

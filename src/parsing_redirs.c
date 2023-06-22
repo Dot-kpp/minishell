@@ -41,7 +41,7 @@ char	**redir_split(char const *s, t_mshell *mshell)
 
 	str = (char *)s;
 	while (!ft_strchr("<>", *str) && *str)
-		str++;
+		str += nextquote(str) + 1;
 	tab = ft_calloc(1, sizeof(*tab));
 	if (!tab)
 		return (perror("redir_split: "), (char **) NULL);

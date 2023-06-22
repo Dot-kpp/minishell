@@ -20,7 +20,7 @@ static char	*expand_cmd(char *name, char *path)
 	int		len;
 	int		i;
 
-	if (ft_strchr(name, '/'))
+	if (ft_strchr(name, '/') || !path)
 		return (name);
 	paths = ft_split((const char *)path, ':');
 	len = 0;

@@ -18,15 +18,11 @@ int	ms_pwd(int argc, char const *argv[], t_mshell *mshell)
 {
 	char	cwd[PATH_MAX];
 
+	(void)argc;
 	(void)argv;
 	(void)mshell;
-	if (argc > 1)
-		perror("pwd: too many arguments");
-	else if (getcwd(cwd, PATH_MAX) != NULL)
-	{
-		printf("%s\n", cwd);
-		return (0);
-	}
+	if (getcwd(cwd, PATH_MAX) != NULL)
+		return (printf("%s\n", cwd), 0);
 	else
 		perror("pwd:");
 	return (1);

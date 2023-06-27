@@ -100,5 +100,5 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 			exec_child(i, pipesfd, cmdtab, mshell);
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 	}
-	return (waitall(cmdtab->cmdc, pids));
+	return (free(pids), waitall(cmdtab->cmdc, pids));
 }

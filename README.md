@@ -1,5 +1,9 @@
 # minishell
 
+<p align="center">
+  <img src="/screenshot.png" width="100%" />
+</p>
+
 ## Description
 
 Project from 42 School
@@ -12,23 +16,23 @@ git clone git@github.com:Dot-kpp/minishell.git
 make
 ```
 
-## Goals
+## Features
 
-Draw a waiting prompt <br />
-Have a dynamic history that can be used with arrow up and down <br />
-Can execute any executable file relatively or via $PATH <br />
-Process the single an double quotes <br />
-Possess its own environement variables that can be called with $ <br />
-Handle Redirections and Pipes <br />
-Handle signals from ctrl-C ctrl-D and ctrl-/ according to Bash <br />
-Have its own builtins commands : <br />
-    **echo** with -n flag <br />
-    **cd** only with 1 argument <br />
-    **pwd** without flag <br />
-    **export** without flag <br />
-    **unset** without flag <br />
-    **env** without flag nor argument <br />
-    **exit** without flag <br />
+- Draw a waiting prompt
+- Have a dynamic history that can be used with arrow up and down
+- Can execute any executable file relatively or via $PATH
+- Process the single an double quotes
+- Possess its own environement variables that can be called with $
+- Handle Redirections and Pipes
+- Handle signals from ctrl-C ctrl-D and ctrl-/ according to Bash
+- Have its own builtins commands :
+    - **echo** with -n flag
+    - **cd** only with 1 argument
+    - **pwd** without flag
+    - **export** without flag
+    - **unset** without flag
+    - **env** without flag nor argument
+    - **exit** without flag
 
 ## Usage
 
@@ -36,3 +40,8 @@ Have its own builtins commands : <br />
 ./minishell
 ```
 Same usage as Bash
+
+## Credits
+
+[fgeslin](https://github.com/KayzaFlo)
+[jpilotte](https://github.com/Dot-kpp)

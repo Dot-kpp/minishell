@@ -20,9 +20,9 @@ make
 
 - Draw a waiting prompt
 - Have a dynamic history that can be used with arrow up and down
-- Can execute any executable file relatively or via $PATH
-- Process the single an double quotes
-- Possess its own environement variables that can be called with $
+- Handle any executable file relatively or via $PATH
+- Process the single a double quotes
+- Possess its own environment variables that can be called with $
 - Handle Redirections and Pipes
 - Handle signals from ctrl-C ctrl-D and ctrl-/ according to Bash
 - Have its own builtins commands :
@@ -31,7 +31,7 @@ make
     - **pwd** without flag
     - **export** without flag
     - **unset** without flag
-    - **env** without flag nor argument
+    - **env** without flag, nor argument
     - **exit** without flag
 
 ## Usage
@@ -43,5 +43,8 @@ Same usage as Bash
 
 ## Credits
 
-[fgeslin](https://github.com/KayzaFlo)
-[jpilotte](https://github.com/Dot-kpp)
+[fgeslin](https://github.com/KayzaFlo)</br>
+[jpilotte](https://github.com/Dot-kpp)</br>
+
+https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf</br>
+https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html</br>

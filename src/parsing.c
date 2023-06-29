@@ -12,6 +12,45 @@
 
 #include "../includes/minishell.h"
 
+static char	**arg_addtomat(const char **tab, char **str, t_mshell *mshell)
+{
+	int		len;
+	char	**new_tab;
+
+	len = 0;
+	while (!ft_strchr("\t\n\v\f\r <>\0", (*str)[len]) && (*str)[len])
+		len += nextquote((*str) + len) + 1;
+	new_tab = expand_matrix(tab, arg_quotes((*str), len, mshell));
+	if (!new_tab)
+		return (perror("cmd_split: "), NULL);
+	while (ft_strchr(WHTSPACES, (*str)[len]) && (*str)[len])
+		(*str)++;
+	(*str) += len;
+	return (new_tab);
+}
+
+static char	**redir_addtomat(const char **tab, char **str, t_mshell *mshell)
+{
+	int		len;
+	char	**new_tab;
+
+	len = 0;
+	while (ft_strchr("<>", (*str)[len]) && (*str)[len])
+		len ++;
+	if (ft_strncmp((*str), ">", len) && ft_strncmp((*str), ">>", len)
+		&& ft_strncmp((*str), "<", len) && ft_strncmp((*str), "<<", len))
+		return (printf("mshell: parse error near '%c'\n", *(*str)), NULL);
+	new_tab = expand_matrix(tab, arg_quotes((*str), len, mshell));
+	if (!new_tab)
+		return (perror("cmd_split: "), NULL);
+	while (ft_strchr(WHTSPACES, (*str)[len]) && (*str)[len])
+		(*str)++;
+	(*str) += len;
+	len = 0;
+	new_tab = arg_addtomat((MATRIX)new_tab, str, mshell);
+	return (new_tab);
+}
+
 static int	init_tokenize(char const *prompt, t_cmdtab **tct, char ***cl)
 {
 	*tct = ft_calloc(1, sizeof(t_cmdtab));
@@ -27,24 +66,28 @@ static int	init_tokenize(char const *prompt, t_cmdtab **tct, char ***cl)
 	return (0);
 }
 
-static int	tokenize2(t_mshell *mshell, t_cmdtab *cmdtab, char **cmdlines)
+static int	parsing_split(char const *s, t_mshell *mshell, t_cmd *cmd)
 {
-	int	i;
+	char	*str;
 
-	i = -1;
-	while (cmdlines[++i])
+	str = (char *)s;
+	cmd->argv = ft_calloc(1, sizeof(*(cmd->argv)));
+	cmd->redirs = ft_calloc(1, sizeof(*(cmd->redirs)));
+	if (!cmd->argv || !cmd->redirs)
+		return (perror("cmd_split: "), -1);
+	while (*str)
 	{
-		cmdtab->cmdv[i].argv = arg_split(cmdlines[i], mshell);
-		if (!cmdtab->cmdv[i].argv)
+		if (*str == '<' || *str == '>')
+			cmd->redirs = redir_addtomat((MATRIX)cmd->redirs, &str, mshell);
+		else
+			cmd->argv = arg_addtomat((MATRIX)cmd->argv, &str, mshell);
+		if (!cmd->argv || !cmd->redirs)
 			return (-1);
-		cmdtab->cmdv[i].argc = get_matrixlen((MATRIX)cmdtab->cmdv[i].argv);
-		cmdtab->cmdv[i].redirs = redir_split(cmdlines[i], mshell);
-		if (!cmdtab->cmdv[i].redirs)
-			return (-1);
-		cmdtab->cmdv[i].redirc = get_matrixlen((MATRIX)cmdtab->cmdv[i].redirs);
-		if (cmdtab->cmdv[i].argc == 0 && cmdtab->cmdv[i].redirc == 0)
-			return (ft_perror(1, "parse error near '|'"), -1);
 	}
+	cmd->argc = get_matrixlen((MATRIX)cmd->argv);
+	cmd->redirc = get_matrixlen((MATRIX)cmd->redirs);
+	if (cmd->argc == 0 && cmd->redirc == 0)
+		return (ft_perror(1, "parse error near '|'"), -1);
 	return (0);
 }
 
@@ -52,6 +95,7 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 {
 	t_cmdtab	*cmdtab;
 	char		**cmdlines;
+	int			i;
 
 	if (init_tokenize(prompt, &cmdtab, &cmdlines))
 	{
@@ -60,10 +104,15 @@ t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell)
 		free_cmdtab(cmdtab);
 		return (NULL);
 	}
-	if (tokenize2(mshell, cmdtab, cmdlines))
+	i = -1;
+	while (cmdlines[++i])
 	{
-		free_cmdtab(cmdtab);
-		cmdtab = NULL;
+		if (parsing_split(cmdlines[i], mshell, cmdtab->cmdv + i))
+		{
+			free_cmdtab(cmdtab);
+			cmdtab = NULL;
+			break ;
+		}
 	}
 	free_matrix(cmdlines);
 	return (cmdtab);

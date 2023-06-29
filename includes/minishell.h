@@ -96,8 +96,6 @@ void		new_prompt_signal(void);
 //parsing
 t_cmdtab	*tokenize(char const *prompt, t_mshell *mshell);
 char		**cmd_split(char const *s);
-char		**arg_split(char const *s, t_mshell *mshell);
-char		**redir_split(char const *s, t_mshell *mshell);
 char		*arg_quotes(char const *str, int len, t_mshell *mshell);
 //parsing utils
 char		*ft_append(char *s1, char const *s2, int n);

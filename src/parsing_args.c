@@ -104,28 +104,3 @@ char	*arg_quotes(char const *str, int len, t_mshell *mshell)
 		arg = arg_expand(arg, str + i[1], i[0], mshell);
 	return (arg);
 }
-
-char	**arg_split(char const *s, t_mshell *mshell)
-{
-	char	**tab;
-	char	*str;
-	int		len;
-
-	str = (char *)s;
-	tab = ft_calloc(1, sizeof(*tab));
-	if (!tab)
-		return (perror("cmd_split: "), (char **) NULL);
-	while (*str && *str != '<' && *str != '>')
-	{
-		len = 0;
-		while (!ft_strchr("\t\n\v\f\r <>\0", str[len]) && str[len])
-			len += nextquote(str + len) + 1;
-		tab = expand_matrix((const char **)tab, arg_quotes(str, len, mshell));
-		if (!tab)
-			return (perror("cmd_split: "), NULL);
-		while (ft_strchr(WHTSPACES, str[len]) && str[len])
-			str++;
-		str += len;
-	}
-	return (tab);
-}

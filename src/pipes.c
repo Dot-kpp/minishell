@@ -30,6 +30,8 @@ static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
 //child
 static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 {
+	int	ret;
+
 	signal(SIGQUIT, SIG_ERR);
 	signal(SIGINT, SIG_ERR);
 	if (i > 0)
@@ -45,7 +47,8 @@ static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 		close(pfd[0][1]);
 	}
 	call_redirections(&cmdtab->cmdv[i]);
-	exit(exec_cmd(cmdtab->cmdv[i], ms));
+	ret = exec_cmd(cmdtab->cmdv[i], ms);
+	exit(ret);
 }
 
 //main

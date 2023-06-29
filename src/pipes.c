@@ -71,6 +71,7 @@ static int	waitall(int count, pid_t *pids)
 	i = -1;
 	while (++i < count)
 		waitpid(pids[i], &exit_status, 0);
+	free(pids);
 	return (WEXITSTATUS(exit_status));
 }
 
@@ -100,5 +101,5 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 			exec_child(i, pipesfd, cmdtab, mshell);
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 	}
-	return (free(pids), waitall(cmdtab->cmdc, pids));
+	return (waitall(cmdtab->cmdc, pids));
 }

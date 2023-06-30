@@ -46,7 +46,9 @@ static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 		close(pfd[0][0]);
 		close(pfd[0][1]);
 	}
-	call_redirections(&cmdtab->cmdv[i]);
+	ret = call_redirections(&cmdtab->cmdv[i]);
+	if (ret)
+		exit(ret);
 	ret = exec_cmd(cmdtab->cmdv[i], ms);
 	exit(ret);
 }

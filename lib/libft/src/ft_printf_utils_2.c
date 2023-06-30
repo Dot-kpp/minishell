@@ -32,7 +32,7 @@ void	ft_putnbr(int n, int *len)
 	{
 		ft_putnbr(num / 10, len);
 		num %= 10;
-	}	
+	}
 	ft_putchar(num + '0', len);
 }
 

@@ -101,20 +101,20 @@ int	call_redirections(t_cmd *cmd)
 	t_redirections	redirs;
 
 	if (call_redirections2(&redirs, cmd) == -1)
-		return (-1);
+		return (1);
 	if (redirs.output_file != NULL)
 	{
 		redirs.output_fd = open_output_file(redirs.output_file,
 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (redirs.output_fd == -1)
-			return (perror("open"), -1);
+			return (perror("open"), 1);
 	}
 	if (dup2(redirs.input_fd, STDIN_FILENO) == -1
 		|| dup2(redirs.output_fd, STDOUT_FILENO) == -1)
-		return (perror("dup2"), -1);
+		return (perror("dup2"), 1);
 	if (redirs.input_file != NULL)
 		close(redirs.input_fd);
 	if (redirs.output_file != NULL || redirs.append_file != NULL)
 		close(redirs.output_fd);
-	return (-1);
+	return (0);
 }

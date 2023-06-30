@@ -37,8 +37,9 @@ int	arg_expand2(char **s, const char *str, t_mshell *mshell)
 	if (str[i] == '?')
 	{
 		i++;
-		*s = ft_append(*s, ft_itoa((int)mshell->exit_status),
-				ft_strlen(ft_itoa((int)mshell->exit_status)));
+		temp = ft_itoa((int)mshell->exit_status);
+		*s = ft_append(*s, temp, ft_strlen(temp));
+		free (temp);
 	}
 	else if (ft_isalnum(str[i]) || str[i] == '_')
 	{

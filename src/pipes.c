@@ -96,7 +96,7 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	{
 		exit_status = try_builtin(cmdtab, mshell, i);
 		if (exit_status > -1)
-			return (exit_status);
+			return (free(pids), exit_status);
 		if (pipe(pipesfd[0]) == -1)
 			return (perror("pipe"), EXIT_FAILURE);
 		pids[i] = fork();

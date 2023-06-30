@@ -12,43 +12,39 @@
 
 #include "../includes/minishell.h"
 
-static char	**arg_addtomat(const char **tab, char **str, t_mshell *mshell)
+int	arg_addtomat(char **str, t_mshell *mshell, char ***mat)
 {
 	int		len;
-	char	**new_tab;
 
 	len = 0;
 	while (!ft_strchr("\t\n\v\f\r <>\0", (*str)[len]) && (*str)[len])
 		len += nextquote((*str) + len) + 1;
-	new_tab = expand_matrix(tab, arg_quotes((*str), len, mshell));
-	if (!new_tab)
-		return (perror("cmd_split: "), NULL);
+	*mat = expand_matrix((MATRIX) * mat, arg_quotes((*str), len, mshell));
+	if (!*mat)
+		return (perror("cmd_split: "), -1);
 	while (ft_strchr(WHTSPACES, (*str)[len]) && (*str)[len])
 		(*str)++;
 	(*str) += len;
-	return (new_tab);
+	return (0);
 }
 
-static char	**redir_addtomat(const char **tab, char **str, t_mshell *mshell)
+int	redir_addtomat(char **str, t_mshell *mshell, char ***mat)
 {
 	int		len;
-	char	**new_tab;
 
 	len = 0;
 	while (ft_strchr("<>", (*str)[len]) && (*str)[len])
-		len ++;
+		len++;
 	if (ft_strncmp((*str), ">", len) && ft_strncmp((*str), ">>", len)
 		&& ft_strncmp((*str), "<", len) && ft_strncmp((*str), "<<", len))
-		return (printf("mshell: parse error near '%c'\n", *(*str)), NULL);
-	new_tab = expand_matrix(tab, arg_quotes((*str), len, mshell));
-	if (!new_tab)
-		return (perror("cmd_split: "), NULL);
+		return (ft_perror(1, "parse error near <>"), -1);
+	*mat = expand_matrix((MATRIX) * mat, arg_quotes((*str), len, mshell));
+	if (!*mat)
+		return (perror("cmd_split: "), -1);
 	while (ft_strchr(WHTSPACES, (*str)[len]) && (*str)[len])
 		(*str)++;
 	(*str) += len;
-	len = 0;
-	new_tab = arg_addtomat((MATRIX)new_tab, str, mshell);
-	return (new_tab);
+	return (arg_addtomat(str, mshell, mat));
 }
 
 static int	init_tokenize(char const *prompt, t_cmdtab **tct, char ***cl)
@@ -69,6 +65,7 @@ static int	init_tokenize(char const *prompt, t_cmdtab **tct, char ***cl)
 static int	parsing_split(char const *s, t_mshell *mshell, t_cmd *cmd)
 {
 	char	*str;
+	int		err;
 
 	str = (char *)s;
 	cmd->argv = ft_calloc(1, sizeof(*(cmd->argv)));
@@ -78,10 +75,10 @@ static int	parsing_split(char const *s, t_mshell *mshell, t_cmd *cmd)
 	while (*str)
 	{
 		if (*str == '<' || *str == '>')
-			cmd->redirs = redir_addtomat((MATRIX)cmd->redirs, &str, mshell);
+			err = redir_addtomat(&str, mshell, &cmd->redirs);
 		else
-			cmd->argv = arg_addtomat((MATRIX)cmd->argv, &str, mshell);
-		if (!cmd->argv || !cmd->redirs)
+			err = arg_addtomat(&str, mshell, &cmd->argv);
+		if (err != 0)
 			return (-1);
 	}
 	cmd->argc = get_matrixlen((MATRIX)cmd->argv);

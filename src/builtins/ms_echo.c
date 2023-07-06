@@ -33,18 +33,20 @@ int	ms_echo(int argc, char const *argv[], t_mshell *mshell)
 	int	newline;
 
 	(void)mshell;
+	if (argc == 1)
+		return (printf("\n"), 0);
 	i = 0;
 	newline = 1;
-	if (argc == 1)
-		printf("\n");
-	while (isflag(argv[++i]))
-		newline = 0;
-	while (i < argc)
+	while (++i < argc)
 	{
-		printf("%s", argv[i]);
-		if (i + 1 < argc)
-			printf(" ");
-		i++;
+		if (isflag(argv[i]))
+			newline = 0;
+		else
+		{
+			printf("%s", argv[i]);
+			if (i + 1 < argc)
+				printf(" ");
+		}
 	}
 	if (newline)
 		printf("\n");

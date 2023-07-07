@@ -90,11 +90,16 @@ void	free_matrix(char **matrix)
 	int	num_rows;
 	int	i;
 
+	if (!matrix)
+		return ;
 	num_rows = 0;
 	while (matrix[num_rows] != NULL)
 		num_rows++;
 	i = -1;
 	while (++i < num_rows)
+	{
 		free(matrix[i]);
+		matrix[i] = 0;
+	}
 	free(matrix);
 }

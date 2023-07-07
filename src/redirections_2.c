@@ -37,23 +37,14 @@ void	handle_input_redirection(char **argv, int *argc, char **input_file)
 			if (i + 1 >= *argc)
 				redir_error();
 			*input_file = argv[i + 1];
-			ft_memmove(&argv[i], &argv[i + 2],
-				(*argc - i - 1) * sizeof(char *));
-			*argc -= 2;
-			i--;
+			printf("AH\n");
+			// ft_memmove(&argv[i], &argv[i + 2],
+			// 	(*argc - i - 1) * sizeof(char *));
+			// *argc -= 2;
+			// i--;
 		}
 		i++;
 	}
-}
-
-void	handle_output_file(char **argv, int *argc, char **file, int index)
-{
-	if (index + 1 >= *argc)
-		redir_error();
-	*file = argv[index + 1];
-	ft_memmove(&argv[index], &argv[index + 2],
-		(*argc - index - 1) * sizeof(char *));
-	*argc -= 2;
 }
 
 void	handle_single_output_redirection(char **argv, int *argc,
@@ -66,8 +57,13 @@ void	handle_single_output_redirection(char **argv, int *argc,
 	{
 		if (ft_strcmp(argv[i], operator) == 0)
 		{
-			handle_output_file(argv, argc, file, i);
-			i--;
+			if (i + 1 >= *argc)
+				redir_error();
+			*file = argv[i + 1];
+			// ft_memmove(&argv[i], &argv[i + 2],
+			// 	(*argc - i - 1) * sizeof(char *));
+			// *argc -= 2;
+			// i--;
 		}
 		i++;
 	}

@@ -85,6 +85,9 @@ static int	parsing_split(char const *s, t_mshell *mshell, t_cmd *cmd)
 	cmd->redirc = get_matrixlen((MATRIX)cmd->redirs);
 	if (cmd->argc == 0 && cmd->redirc == 0)
 		return (ft_perror(1, "parse error near '|'"), -1);
+	// free_matrix(cmd->redirs);
+	// cmd->redirs = NULL;
+	// cmd->redirc = 0;
 	return (0);
 }
 

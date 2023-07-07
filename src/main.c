@@ -36,6 +36,8 @@ static int	exec_prompt(char *prompt, t_mshell *mshell)
 		mshell->exit_status = 1;
 		return (0);
 	}
+	add_history(prompt);
+	free(prompt);
 	mshell->exit_status = exec_pipeline(cmdtab, mshell);
 	free_cmdtab(cmdtab);
 	return (1);
@@ -63,9 +65,7 @@ static void	minishell(t_mshell *mshell)
 			free(prompt);
 			continue ;
 		}
-		if (exec_prompt(prompt, mshell))
-			add_history(prompt);
-		free(prompt);
+		exec_prompt(prompt, mshell);
 	}
 }
 

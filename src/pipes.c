@@ -27,7 +27,7 @@ static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
 	*i = -1;
 }
 
-//child
+//child process
 static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 {
 	int	ret;
@@ -50,10 +50,12 @@ static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 	if (ret)
 		exit(ret);
 	ret = exec_cmd(cmdtab->cmdv[i], ms);
+	free_cmdtab(cmdtab);
+	free_matrix(ms->env);
 	exit(ret);
 }
 
-//main
+//main process
 static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 {
 	if (i > 0)
@@ -103,7 +105,10 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 		if (pids[i] == -1)
 			return (perror("fork"), EXIT_FAILURE);
 		else if (pids[i] == 0)
+		{
+			free(pids);
 			exec_child(i, pipesfd, cmdtab, mshell);
+		}
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 	}
 	return (waitall(cmdtab->cmdc, pids));

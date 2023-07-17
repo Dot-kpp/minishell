@@ -17,17 +17,6 @@
 #define IN 0
 #define OUT 1
 
-static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
-{
-	signal(SIGINT, SIG_IGN);
-	*exit_status = 0;
-	pipesfd[0][0] = 0;
-	pipesfd[0][1] = 1;
-	pipesfd[1][0] = -1;
-	pipesfd[1][1] = -1;
-	*i = -1;
-}
-
 //child process
 static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 {
@@ -74,29 +63,13 @@ static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 	}
 }
 
-static int	waitall(int count, pid_t *pids)
+static int	pipeline(t_cmdtab *cmdtab, t_mshell *mshell,
+		pid_t *pids, int pipesfd[2][2])
 {
 	int	exit_status;
 	int	i;
 
 	i = -1;
-	while (++i < count)
-		waitpid(pids[i], &exit_status, 0);
-	free(pids);
-	return (WEXITSTATUS(exit_status));
-}
-
-int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
-{
-	int		exit_status;
-	pid_t	*pids;
-	int		i;
-	int		pipesfd[2][2];
-
-	init_var(&exit_status, pipesfd, &i);
-	pids = ft_calloc(cmdtab->cmdc + 1, sizeof(int));
-	if (pids == NULL)
-		return (perror("exec"), EXIT_FAILURE);
 	while (++i < cmdtab->cmdc)
 	{
 		exit_status = try_builtin(cmdtab, mshell, i);
@@ -114,5 +87,30 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 		}
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 	}
-	return (waitall(cmdtab->cmdc, pids));
+	return (EXIT_SUCCESS);
+}
+
+int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
+{
+	int		exit_status;
+	pid_t	*pids;
+	int		i;
+	int		pipesfd[2][2];
+
+	signal(SIGINT, SIG_IGN);
+	pipesfd[0][0] = 0;
+	pipesfd[0][1] = 1;
+	pipesfd[1][0] = -1;
+	pipesfd[1][1] = -1;
+	pids = ft_calloc(cmdtab->cmdc + 1, sizeof(int));
+	if (pids == NULL)
+		return (perror("exec"), EXIT_FAILURE);
+	exit_status = pipeline(cmdtab, mshell, pids, pipesfd);
+	if (exit_status)
+		return (exit_status);
+	i = -1;
+	while (++i < cmdtab->cmdc)
+		waitpid(pids[i], &exit_status, 0);
+	free(pids);
+	return (WEXITSTATUS(exit_status));
 }

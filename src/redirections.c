@@ -51,14 +51,10 @@ void	handle_heredoc_redirection(char **argv, int *argc,
 		{
 			dup2(1, STDIN_FILENO);
 			tmpfd = open(TMPFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (i + 1 >= *argc)
+			if (i + 1 >= *argc || *argv[i + 1] == '\0')
 				redir_error();
 			write(STDOUT_FILENO, "heredoc>", 9);
 			*delimiter = argv[i + 1];
-			// ft_memmove(&argv[i], &argv[i + 2],
-			// 	(*argc - i - 1) * sizeof(char *));
-			// *argc -= 2;
-			// i--;
 			read_heredoc_input(delimiter, tmpfd);
 			*input_file = TMPFILE;
 			close (tmpfd);

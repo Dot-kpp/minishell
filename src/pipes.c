@@ -19,6 +19,7 @@
 
 static void	init_var(int *exit_status, int pipesfd[2][2], int *i)
 {
+	signal(SIGINT, SIG_IGN);
 	*exit_status = 0;
 	pipesfd[0][0] = 0;
 	pipesfd[0][1] = 1;
@@ -41,11 +42,9 @@ static void	exec_child(int i, int pfd[2][2], t_cmdtab *cmdtab, t_mshell *ms)
 		close(pfd[1][1]);
 	}
 	if (i < cmdtab->cmdc - 1)
-	{
 		dup2(pfd[0][1], STDOUT_FILENO);
-		close(pfd[0][0]);
-		close(pfd[0][1]);
-	}
+	close(pfd[0][0]);
+	close(pfd[0][1]);
 	ret = call_redirections(&cmdtab->cmdv[i]);
 	if (ret)
 		exit(ret);
@@ -68,6 +67,11 @@ static void	close_pipes(int i, int pipefd[2], int ppipefd[2], t_cmdtab *cmdtab)
 		ppipefd[0] = pipefd[0];
 		ppipefd[1] = pipefd[1];
 	}
+	if (i == cmdtab->cmdc - 1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
+	}
 }
 
 static int	waitall(int count, pid_t *pids)
@@ -89,7 +93,6 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	int		i;
 	int		pipesfd[2][2];
 
-	signal(SIGINT, SIG_IGN);
 	init_var(&exit_status, pipesfd, &i);
 	pids = ft_calloc(cmdtab->cmdc + 1, sizeof(int));
 	if (pids == NULL)

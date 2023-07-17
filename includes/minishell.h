@@ -25,13 +25,12 @@
 # include <stdlib.h>
 # include <string.h>
 
-# define MATRIX const char **
-# define TMPFILE "/tmp/heredoc"
-
 # define MAX_PATH_LENGTH 1024
 # define MAX_ARGS 128
-
+# define TMPFILE "/tmp/heredoc"
 # define WHTSPACES "\t\n\v\f\r \0"
+
+typedef const char **	t_mat;
 
 typedef struct s_cmd
 {

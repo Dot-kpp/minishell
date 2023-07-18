@@ -87,7 +87,7 @@ static int	pipeline(t_cmdtab *cmdtab, t_mshell *mshell,
 		}
 		close_pipes(i, pipesfd[0], pipesfd[1], cmdtab);
 	}
-	return (EXIT_SUCCESS);
+	return (-1);
 }
 
 int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
@@ -106,7 +106,7 @@ int	exec_pipeline(t_cmdtab *cmdtab, t_mshell *mshell)
 	if (pids == NULL)
 		return (perror("exec"), EXIT_FAILURE);
 	exit_status = pipeline(cmdtab, mshell, pids, pipesfd);
-	if (exit_status)
+	if (exit_status > -1)
 		return (exit_status);
 	i = -1;
 	while (++i < cmdtab->cmdc)

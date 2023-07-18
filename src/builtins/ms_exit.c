@@ -25,12 +25,15 @@ int	ms_exit(int argc, char const *argv[], t_mshell *mshell)
 	else if (argc == 2)
 		ret = ft_atoi(argv[1]);
 	i = -1;
-	while (argv[1][++i])
+	if (argc < 1)
 	{
-		if (!ft_isdigit(argv[1][i]) && !(argv[1][i] == '-' && i == 0))
+		while (argv[1][++i])
 		{
-			ft_perror(1, "exit: numeric argument required");
-			exit(-1);
+			if (!ft_isdigit(argv[1][i]) && !(argv[1][i] == '-' && i == 0))
+			{
+				ft_perror(1, "exit: numeric argument required");
+				exit(-1);
+			}
 		}
 	}
 	(void)*mshell;

@@ -46,11 +46,11 @@ int	exec_cmd(t_cmd cmd, t_mshell *mshell)
 
 	if (!cmd.argv[0])
 		return (0);
-	exit_status = call_builtin(cmd.argc, (MATRIX)cmd.argv, mshell);
+	exit_status = call_builtin(cmd.argc, (t_mat)cmd.argv, mshell);
 	if (exit_status > -1)
 		return (exit_status);
 	exit_status = execve(expand_cmd(cmd.argv[0], ms_getenv("PATH",
-					(MATRIX)mshell->env)), cmd.argv, mshell->env);
+					(t_mat)mshell->env)), cmd.argv, mshell->env);
 	if (exit_status > -1)
 		return (exit_status);
 	ft_perror(2, "command not found:", cmd.argv[0]);

@@ -43,7 +43,7 @@ char	**cmd_split(char const *s)
 		len = cmd_split2(str);
 		if (len == -1)
 			return (ft_perror(1, "quote error"), NULL);
-		tab = expand_matrix((MATRIX)tab, ft_substr(str, 0, len));
+		tab = expand_matrix((t_mat)tab, ft_substr(str, 0, len));
 		if (!tab)
 			return (perror("cmd_split: "), NULL);
 		if (!str[len])

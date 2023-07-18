@@ -72,7 +72,7 @@ int	try_builtin(t_cmdtab *cmdtab, t_mshell *mshell, int i)
 		&& cmdtab->cmdc == 1)
 	{
 		exit_status = call_builtin(cmdtab->cmdv[i].argc,
-				(MATRIX)cmdtab->cmdv[i].argv, mshell);
+				(t_mat)cmdtab->cmdv[i].argv, mshell);
 	}
 	return (exit_status);
 }

@@ -6,6 +6,9 @@
 
 ## Description
 
+<p align="left">
+  <img src="/succes.png" width="20%" />
+</p>
 Project from 42 School
 A simple re-creation of Bash in C and [Readline library](https://tiswww.case.edu/php/chet/readline/rltop.html)
 
